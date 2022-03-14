@@ -12,24 +12,47 @@ import java.util.Arrays;
 public class Module {
 
 	protected final Minecraft mc;
-	@Getter
-	@Setter
 	private final String moduleName;
-	@Getter
 	private final String moduleDescription;
-	@Getter
 	private final Category category;
-	@Getter
-	@Setter
 	protected boolean enabled;
-	@Getter
-	@Setter
 	protected boolean visible;
-	@Getter
-	@Setter
 	private int keyCode = 0;
-	@Getter
-	@Setter
+
+	public void setKeyCode(int keyCode) {
+		this.keyCode = keyCode;
+	}
+	public void setModuleDisplayName(String moduleDisplayName) {
+		this.moduleDisplayName = moduleDisplayName;
+	}
+	public void setValues(ArrayList<Value<?>> moduleValues) {
+		this.moduleValues = moduleValues;
+	}
+	public String getModuleName() {
+		return moduleName;
+	}
+	public String getModuleDescription() {
+		return moduleDescription;
+	}
+	public Category getCategory() {
+		return category;
+	}
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public boolean isVisible() {
+		return visible;
+	}
+	public int getKeyCode() {
+		return keyCode;
+	}
+	public String getModuleDisplayName() {
+		return moduleDisplayName;
+	}
+	public ArrayList<Value<?>> getValues() {
+		return moduleValues;
+	}
+
 	private String moduleDisplayName;
 	private ArrayList<Value<?>> moduleValues = new ArrayList<>();
 
@@ -41,10 +64,6 @@ public class Module {
 		this.visible = visible;
 		this.category = category;
 		mc = Minecraft.getMinecraft();
-	}
-
-	public ArrayList<Value<?>> getValues() {
-		return this.moduleValues;
 	}
 
 	public void setValues(Value<?>... values) {
