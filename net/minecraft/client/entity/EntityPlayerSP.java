@@ -1,5 +1,8 @@
 package net.minecraft.client.entity;
 
+import io.github.nevalackin.Supernova;
+import io.github.nevalackin.events.player.EventMotion;
+import io.github.nevalackin.events.player.EventUpdate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -183,6 +186,16 @@ public class EntityPlayerSP extends AbstractClientPlayer
         }
     }
 
+    @Override
+    public void moveEntity(double x, double y, double z) {
+        EventMotion event = new EventMotion(x,y,z);
+        Supernova.INSTANCE.getEventBus().call(event);
+        if(event.cancelled) return;
+        super.moveEntity(event.getX(), event.getY(), event.getZ());
+        event.setPre(false);
+        Supernova.INSTANCE.getEventBus().call(event);
+    }
+
     /**
      * called every tick when the player is on foot. Performs all the things that normally happen during movement.
      */
@@ -230,23 +243,22 @@ public class EntityPlayerSP extends AbstractClientPlayer
             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.positionUpdateTicks >= 20;
             boolean flag3 = d3 != 0.0D || d4 != 0.0D;
 
-            if (this.ridingEntity == null)
-            {
-                if (flag2 && flag3)
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround));
-                }
-                else if (flag2)
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.onGround));
-                }
-                else if (flag3)
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
-                }
-                else
-                {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer(this.onGround));
+            if (this.ridingEntity == null) {
+                EventUpdate event = new EventUpdate(posX, this.getEntityBoundingBox().minY, posZ, rotationYaw, rotationPitch, onGround);
+                Supernova.INSTANCE.getEventBus().call(event);
+                if (!event.cancelled) {
+                    if (flag2 && flag3) {
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(event.getX(), event.getY(), event.getZ(),
+                                event.getYaw(), event.getPitch(), event.isOnGround()));
+                    } else if (flag2) {
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(event.getX(), event.getY(), event.getZ(), event.isOnGround()));
+                    } else if (flag3) {
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(event.getYaw(), event.getPitch(), event.isOnGround()));
+                    } else {
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer(event.isOnGround()));
+                    }
+                    event.setPre(false);
+                    Supernova.INSTANCE.getEventBus().call(event);
                 }
             }
             else

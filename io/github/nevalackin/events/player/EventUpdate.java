@@ -77,4 +77,23 @@ public class EventUpdate implements Event {
 	public float getYaw() {
 		return yaw;
 	}
+
+	public float getPitch() {
+		return pitch;
+	}
+
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	public boolean isPre() {
+		return pre;
+	}
+	public boolean isPost() {
+		return !pre;
+	}
+
+	public boolean isOnGround() {
+		return onGround;
+	}
 }
