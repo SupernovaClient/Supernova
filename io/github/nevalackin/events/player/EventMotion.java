@@ -1,15 +1,9 @@
 package io.github.nevalackin.events.player;
 
 import best.azura.eventbus.core.Event;
-import lombok.Getter;
-import lombok.Setter;
 
 public class EventMotion implements Event {
-	@Getter
-	@Setter
 	private double x, y, z;
-	@Getter
-	@Setter
 	private boolean pre = true;
 	public boolean cancelled;
 
@@ -21,5 +15,33 @@ public class EventMotion implements Event {
 
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setPre(boolean pre) {
+		this.pre = pre;
 	}
 }

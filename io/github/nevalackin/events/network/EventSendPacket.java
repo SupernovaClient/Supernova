@@ -1,14 +1,10 @@
 package io.github.nevalackin.events.network;
 
 import best.azura.eventbus.core.Event;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.network.Packet;
 
 public class EventSendPacket implements Event {
 
-	@Getter
-	@Setter
 	private Packet<?> packet;
 	public boolean cancelled;
 
@@ -18,5 +14,13 @@ public class EventSendPacket implements Event {
 
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
+	}
+
+	public Packet<?> getPacket() {
+		return packet;
+	}
+
+	public void setPacket(Packet<?> packet) {
+		this.packet = packet;
 	}
 }

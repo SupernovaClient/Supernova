@@ -2,7 +2,6 @@ package io.github.nevalackin;
 
 import best.azura.eventbus.core.EventBus;
 import io.github.nevalackin.modules.ModuleManager;
-import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 
@@ -10,8 +9,8 @@ public enum Supernova {
 
 	INSTANCE;
 
+	public static final String CLIENT_NAME = "Supernova";
 	private final Minecraft mc = Minecraft.getMinecraft();
-	@Getter
 	private EventBus eventBus;
 
 	public void startup() {
@@ -31,4 +30,7 @@ public enum Supernova {
 		mc.thePlayer.addChatMessage(new ChatComponentText(prefix + " " + message));
 	}
 
+	public EventBus getEventBus() {
+		return eventBus;
+	}
 }

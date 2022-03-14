@@ -2,8 +2,6 @@ package io.github.nevalackin.modules;
 
 import io.github.nevalackin.Supernova;
 import io.github.nevalackin.value.Value;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;

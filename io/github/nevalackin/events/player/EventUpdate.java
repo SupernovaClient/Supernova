@@ -1,23 +1,13 @@
 package io.github.nevalackin.events.player;
 
 import best.azura.eventbus.core.Event;
-import lombok.Getter;
-import lombok.Setter;
 
 public class EventUpdate implements Event {
-	@Getter
-	@Setter
 	private double x, y, z;
-	@Getter
-	@Setter
 	private float yaw, pitch;
-	@Getter
-	@Setter
 	private boolean onGround;
 
 	public boolean cancelled;
-	@Getter
-	@Setter
 	private boolean pre;
 
 	public EventUpdate(double x, double y, double z, float yaw, float pitch, boolean onGround, boolean isPre) {
@@ -44,4 +34,47 @@ public class EventUpdate implements Event {
 		this.cancelled = cancelled;
 	}
 
+	public void setOnGround(boolean onGround) {
+		this.onGround = onGround;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setPitch(float pitch) {
+		this.pitch = pitch;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public void setPre(boolean pre) {
+		this.pre = pre;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public void setYaw(float yaw) {
+		this.yaw = yaw;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
+	}
+
+	public float getYaw() {
+		return yaw;
+	}
 }
