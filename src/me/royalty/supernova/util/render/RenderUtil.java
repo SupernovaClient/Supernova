@@ -1,4 +1,4 @@
-package me.royalty.supernova.util;
+package me.royalty.supernova.util.render;
 
 import net.minecraft.client.gui.Gui;
 
