@@ -1,6 +1,7 @@
 package io.github.nevalackin;
 
 import best.azura.eventbus.core.EventBus;
+import io.github.nevalackin.gui.guiscreen.click.GuiClickGui;
 import io.github.nevalackin.modules.ModuleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
@@ -12,10 +13,16 @@ public enum Supernova {
 	public static final String CLIENT_NAME = "Supernova";
 	private final Minecraft mc = Minecraft.getMinecraft();
 	private EventBus eventBus;
+	private GuiClickGui clickGui;
+
+	public GuiClickGui getClickGui() {
+		return clickGui;
+	}
 
 	public void startup() {
 		eventBus = new EventBus();
 		ModuleManager.INSTANCE.init();
+		clickGui = new GuiClickGui();
 		eventBus.register(this);
 	}
 

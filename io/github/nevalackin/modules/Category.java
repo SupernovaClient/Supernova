@@ -5,9 +5,10 @@ public enum Category {
     MOVEMENT("Movement"),
     PLAYER("Player"),
     RENDER("Render"),
-    MISC("Misc");
+    MISC("Misc"),
+    MACRO("Macro");
 
-    final String name;
+    public final String name;
     Category(String name) {
         this.name = name;
     }

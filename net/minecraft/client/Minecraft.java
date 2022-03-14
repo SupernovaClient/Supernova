@@ -10,6 +10,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import io.github.nevalackin.Supernova;
+import io.github.nevalackin.events.misc.EventKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -1586,6 +1587,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 				this.dispatchKeypresses();
 
 				if (Keyboard.getEventKeyState()) {
+
+					Supernova.INSTANCE.getEventBus().call(new EventKey(k));
+
 					if (k == 62 && this.entityRenderer != null) {
 						this.entityRenderer.switchUseShader();
 					}

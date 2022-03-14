@@ -4,6 +4,7 @@ import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
 import io.github.nevalackin.Supernova;
 import io.github.nevalackin.events.misc.EventKey;
+import io.github.nevalackin.modules.render.ClickGUI;
 import io.github.nevalackin.modules.render.HUD;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class ModuleManager {
 		Supernova.INSTANCE.getEventBus().register(this);
 
 		modules.add(new HUD());
+		modules.add(new ClickGUI());
 	}
 
 	@EventHandler
