@@ -1,6 +1,7 @@
 package io.github.nevalackin.gui.guiscreen.click.impl.module.values;
 
 import io.github.nevalackin.gui.guiscreen.click.impl.module.ModuleDropdown;
+import io.github.nevalackin.util.render.RenderUtil;
 import io.github.nevalackin.value.impl.EnumValue;
 
 import java.io.IOException;
@@ -15,9 +16,12 @@ public class ModeComponent extends ValueComponent {
         this.value = value;
     }
 
+    private float posX, posY;
     @Override
     public void render(float posX, float posY) {
-
+        this.posX = posX;
+        this.posY = posY;
+        RenderUtil.drawRectWidth(posX,posY,getComponentWidth(),getComponentHeight(),0xFF3A3A3A);
     }
 
     @Override
@@ -33,5 +37,9 @@ public class ModeComponent extends ValueComponent {
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 
+    }
+    public boolean hovered(int mouseX, int mouseY) {
+        return mouseX > posX && mouseX < posX + getComponentWidth() &&
+                mouseY > posY && mouseY < posY + getComponentHeight();
     }
 }

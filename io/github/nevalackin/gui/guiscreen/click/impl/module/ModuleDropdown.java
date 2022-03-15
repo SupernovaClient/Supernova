@@ -16,6 +16,7 @@ public class ModuleDropdown extends Component {
     private ArrayList<ValueComponent> valueComponents = new ArrayList<>();
     private CategoryDropdown parent;
     private Module module;
+
     public ModuleDropdown(CategoryDropdown parent, Module module) {
         this.parent = parent;
         this.module = module;
@@ -49,21 +50,32 @@ public class ModuleDropdown extends Component {
         }
         return height;
     }
+
+    private float posX, posY;
     @Override
     public void render(float posX, float posY) {
+        this.posX = posX;
+        this.posY = posY;
         RenderUtil.drawRectWidth(posX, posY, COMPONENT_WIDTH, COMPONENT_HEIGHT, 0xFF404040);
         mc.blockyFontObj.drawStringWithShadow(module.getModuleName(),posX+4,posY + (COMPONENT_HEIGHT /2f - mc.blockyFontObj.FONT_HEIGHT /2f) ,0xFFDADADA);
+        posY += COMPONENT_HEIGHT;
         if(expanded) {
             for (ValueComponent valueComponent : valueComponents) {
-                posY += valueComponent.getComponentHeight();
                 valueComponent.render(posX, posY);
+                posY += valueComponent.getComponentHeight();
             }
         }
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if(expanded) {
+        if(hoveredComponent(mouseX,mouseY)) {
+            if(mouseButton == 0) {
+                module.toggleModule();
+            } else if (mouseButton == 1) {
+                expanded = !expanded;
+            }
+        } else if(expanded) {
             for(ValueComponent valueComponent : valueComponents) {
                 valueComponent.mouseClicked(mouseX,mouseY,mouseButton);
             }
@@ -84,5 +96,14 @@ public class ModuleDropdown extends Component {
                 valueComponent.mouseClickMove(mouseX,mouseY,clickedMouseButton,timeSinceLastClick);
             }
         }
+    }
+
+    public boolean hovered(int mouseX, int mouseY) {
+        return mouseX > posX && mouseX < posX + getComponentWidth() &&
+                mouseY > posY && mouseY < posY + getComponentHeight();
+    }
+    public boolean hoveredComponent(int mouseX, int mouseY) {
+        return mouseX > posX && mouseX < posX + COMPONENT_WIDTH &&
+                mouseY > posY && mouseY < posX + COMPONENT_HEIGHT;
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GuiClickGui extends GuiScreen {
 
@@ -30,28 +31,32 @@ public class GuiClickGui extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         Gui.drawRect(0,0,mc.displayWidth,mc.displayHeight,0x44222222);
+        Collections.reverse(categoryDropdowns);
         for(CategoryDropdown categoryDropdown : categoryDropdowns) {
             categoryDropdown.render(categoryDropdown.getX(), categoryDropdown.getY());
         }
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        Collections.reverse(categoryDropdowns);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        for(CategoryDropdown categoryDropdown : categoryDropdowns) {
-            categoryDropdown.mouseClicked(mouseX,mouseY,mouseButton);
+        for(CategoryDropdown categoryDropdown :  categoryDropdowns) {
+            if(categoryDropdown.hovered(mouseX,mouseY)) {
+                categoryDropdown.mouseClicked(mouseX, mouseY, mouseButton);
+                return;
+            }
         }
     }
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         for(CategoryDropdown categoryDropdown : categoryDropdowns) {
-            categoryDropdown.mouseReleased(mouseX,mouseY,state);
+            categoryDropdown.mouseReleased(mouseX, mouseY, state);
         }
     }
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         for(CategoryDropdown categoryDropdown : categoryDropdowns) {
-            categoryDropdown.mouseClickMove(mouseX,mouseY,clickedMouseButton,timeSinceLastClick);
+            categoryDropdown.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         }
     }
 

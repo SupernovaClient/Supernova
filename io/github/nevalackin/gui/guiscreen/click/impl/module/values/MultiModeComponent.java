@@ -15,9 +15,11 @@ public class MultiModeComponent extends ValueComponent {
         this.value = value;
     }
 
+    private float posX, posY;
     @Override
     public void render(float posX, float posY) {
-
+        this.posX = posX;
+        this.posY = posY;
     }
 
     @Override
@@ -33,5 +35,9 @@ public class MultiModeComponent extends ValueComponent {
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 
+    }
+    public boolean hovered(int mouseX, int mouseY) {
+        return mouseX > posX && mouseX < posX + getComponentWidth() &&
+                mouseY > posY && mouseY < posY + getComponentHeight();
     }
 }
