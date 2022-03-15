@@ -27,7 +27,6 @@ public class TileEntityEndPortalRenderer extends TileEntitySpecialRenderer<TileE
         GlStateManager.disableLighting();
         field_147527_e.setSeed(31100L);
         float f3 = 0.75F;
-
         for (int i = 0; i < 16; ++i)
         {
             GlStateManager.pushMatrix();
