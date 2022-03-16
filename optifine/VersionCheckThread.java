@@ -51,15 +51,11 @@ public class VersionCheckThread extends Thread
                     }
 
                     Config.setNewRelease(s1);
-                    return;
                 }
             }
             finally
             {
-                if (httpurlconnection != null)
-                {
-                    httpurlconnection.disconnect();
-                }
+                httpurlconnection.disconnect();
             }
         }
         catch (Exception exception)

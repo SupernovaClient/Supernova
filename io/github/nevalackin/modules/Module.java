@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Module {
-
-	protected final Minecraft mc;
-	private final String moduleName;
-	private final String moduleDescription;
-	private final Category category;
+	protected Minecraft mc;
+	private String moduleName;
+	private String moduleDescription;
+	private Category category;
 	protected boolean enabled;
 	protected boolean visible;
 	private int keyCode = 0;
@@ -20,30 +19,39 @@ public class Module {
 	public void setKeyCode(int keyCode) {
 		this.keyCode = keyCode;
 	}
+
 	public void setModuleDisplayName(String moduleDisplayName) {
 		this.moduleDisplayName = moduleDisplayName;
 	}
+
 	public String getModuleName() {
 		return moduleName;
 	}
+
 	public String getModuleDescription() {
 		return moduleDescription;
 	}
+
 	public Category getCategory() {
 		return category;
 	}
+
 	public boolean isEnabled() {
 		return enabled;
 	}
+
 	public boolean isVisible() {
 		return visible;
 	}
+
 	public int getKeyCode() {
 		return keyCode;
 	}
+
 	public String getModuleDisplayName() {
 		return moduleDisplayName;
 	}
+
 	public ArrayList<Value<?>> getValues() {
 		return moduleValues;
 	}
@@ -52,12 +60,14 @@ public class Module {
 	private ArrayList<Value<?>> moduleValues = new ArrayList<>();
 
 
-	public Module(String moduleName, String moduleDescription, Category category, boolean visible) {
-		this.moduleName = moduleName;
-		this.moduleDisplayName = moduleName;
-		this.moduleDescription = moduleDescription;
-		this.visible = visible;
-		this.category = category;
+	public Module() {
+		if (!this.getClass().isAnnotationPresent(ModuleAnnotation.class)) return;
+		ModuleAnnotation annotation = this.getClass().getAnnotation(ModuleAnnotation.class);
+		this.moduleName = annotation.name();
+		this.moduleDisplayName = annotation.displayName();
+		this.moduleDescription = annotation.description();
+		this.visible = annotation.visible();
+		this.category = annotation.category();
 		mc = Minecraft.getMinecraft();
 	}
 

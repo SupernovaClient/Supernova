@@ -454,8 +454,6 @@ public class Config
 
     private static void startVersionCheckThread()
     {
-        VersionCheckThread versioncheckthread = new VersionCheckThread();
-        versioncheckthread.start();
     }
 
     public static boolean isMipmaps()

@@ -360,7 +360,8 @@ public class ItemRenderer
                         break;
 
                     case 4:
-                        this.transformFirstPersonItem(f, 0.0F);
+                        GL11.glTranslatef(0,0.15F,0);
+                        this.transformFirstPersonItem(f, f1);
                         this.func_178103_d();
                         break;
 

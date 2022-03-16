@@ -32,9 +32,9 @@ public class GuiClickGui extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         Gui.drawRect(0,0,mc.displayWidth,mc.displayHeight,0x44222222);
         Collections.reverse(categoryDropdowns);
-        for(CategoryDropdown categoryDropdown : categoryDropdowns) {
+        for(CategoryDropdown categoryDropdown : categoryDropdowns)
             categoryDropdown.render(categoryDropdown.getX(), categoryDropdown.getY());
-        }
+
         Collections.reverse(categoryDropdowns);
     }
 
@@ -49,15 +49,14 @@ public class GuiClickGui extends GuiScreen {
     }
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
-        for(CategoryDropdown categoryDropdown : categoryDropdowns) {
+        for(CategoryDropdown categoryDropdown : categoryDropdowns)
             categoryDropdown.mouseReleased(mouseX, mouseY, state);
-        }
     }
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        for(CategoryDropdown categoryDropdown : categoryDropdowns) {
+        for(CategoryDropdown categoryDropdown : categoryDropdowns)
             categoryDropdown.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        }
+
     }
 
     @Override
