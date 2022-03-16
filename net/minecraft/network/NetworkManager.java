@@ -2,6 +2,8 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import io.github.nevalackin.Supernova;
+import io.github.nevalackin.events.network.EventReceivePacket;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
@@ -146,13 +148,16 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         this.closeChannel(chatcomponenttranslation);
     }
 
-    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet p_channelRead0_2_) throws Exception
+    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet packet) throws Exception
     {
         if (this.channel.isOpen())
         {
             try
             {
-                p_channelRead0_2_.processPacket(this.packetListener);
+                EventReceivePacket event = new EventReceivePacket(packet);
+                Supernova.INSTANCE.getEventBus().call(event);
+                if(event.isCancelled) return;
+                packet.processPacket(this.packetListener);
             }
             catch (ThreadQuickExitException var4)
             {

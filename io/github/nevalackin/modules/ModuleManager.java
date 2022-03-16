@@ -4,6 +4,7 @@ import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
 import io.github.nevalackin.Supernova;
 import io.github.nevalackin.events.misc.EventKey;
+import io.github.nevalackin.modules.macro.CropNuker;
 import io.github.nevalackin.modules.render.ClickGUI;
 import io.github.nevalackin.modules.render.HUD;
 
@@ -24,6 +25,7 @@ public class ModuleManager {
 
 		modules.add(new HUD());
 		modules.add(new ClickGUI());
+		modules.add(new CropNuker());
 	}
 
 	@EventHandler

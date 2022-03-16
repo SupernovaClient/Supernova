@@ -11,4 +11,10 @@ public class MathUtil {
             return (int) (a + (gap * percent));
         }
     }
+    public static int bpsToMillis(double bps) {
+        return (int)((1d / bps)*1000);
+    }
+    public static double millisToBPS(int millis) {
+        return 1000d / millis;
+    }
 }

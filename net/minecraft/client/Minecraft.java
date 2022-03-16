@@ -164,7 +164,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 	private Entity renderViewEntity;
 	public Entity pointedEntity;
 	public EffectRenderer effectRenderer;
-	private final Session session;
+	public Session session;
 	private boolean isGamePaused;
 
 	/**
@@ -1368,48 +1368,66 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 	/**
 	 * Toggles fullscreen mode.
 	 */
-	public void toggleFullscreen() {
-		try {
+	public void toggleFullscreen()
+	{
+		try
+		{
 			this.fullscreen = !this.fullscreen;
+			System.setProperty("org.lwjgl.opengl.Window.undecorated", this.fullscreen ? "true" : "false");
 			this.gameSettings.fullScreen = this.fullscreen;
 
-			if (this.fullscreen) {
+			if (this.fullscreen)
+			{
 				this.updateDisplayMode();
 				this.displayWidth = Display.getDisplayMode().getWidth();
 				this.displayHeight = Display.getDisplayMode().getHeight();
+				Display.setResizable(false);
+				Display.setFullscreen(false);
+				this.updateFramebufferSize();
 
-				if (this.displayWidth <= 0) {
+				if (this.displayWidth <= 0)
+				{
 					this.displayWidth = 1;
 				}
 
-				if (this.displayHeight <= 0) {
+				if (this.displayHeight <= 0)
+				{
 					this.displayHeight = 1;
 				}
-			} else {
+			}
+			else
+			{
 				Display.setDisplayMode(new DisplayMode(this.tempDisplayWidth, this.tempDisplayHeight));
 				this.displayWidth = this.tempDisplayWidth;
 				this.displayHeight = this.tempDisplayHeight;
 
-				if (this.displayWidth <= 0) {
+				if (this.displayWidth <= 0)
+				{
 					this.displayWidth = 1;
 				}
 
-				if (this.displayHeight <= 0) {
+				if (this.displayHeight <= 0)
+				{
 					this.displayHeight = 1;
 				}
 			}
 
-			if (this.currentScreen != null) {
+			if (this.currentScreen != null)
+			{
 				this.resize(this.displayWidth, this.displayHeight);
-			} else {
+			}
+			else
+			{
 				this.updateFramebufferSize();
 			}
 
-			Display.setFullscreen(this.fullscreen);
+			//Display.setFullscreen(this.fullscreen);
 			Display.setVSyncEnabled(this.gameSettings.enableVsync);
 			this.updateDisplay();
-		} catch (Exception exception) {
-			logger.error((String) "Couldn\'t toggle fullscreen", (Throwable) exception);
+		}
+		catch (Exception exception)
+		{
+			logger.error((String)"Couldn\'t toggle fullscreen", (Throwable)exception);
 		}
 	}
 

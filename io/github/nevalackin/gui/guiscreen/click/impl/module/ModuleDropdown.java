@@ -4,10 +4,14 @@ import io.github.nevalackin.gui.guiscreen.click.impl.CategoryDropdown;
 import io.github.nevalackin.gui.guiscreen.click.impl.Component;
 import io.github.nevalackin.gui.guiscreen.click.impl.module.values.*;
 import io.github.nevalackin.modules.Module;
+import io.github.nevalackin.util.input.MouseUtil;
 import io.github.nevalackin.util.render.RenderUtil;
 import io.github.nevalackin.value.Value;
 import io.github.nevalackin.value.impl.*;
+import net.minecraft.client.renderer.GlStateManager;
 
+import javax.vecmath.Vector2f;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -39,7 +43,7 @@ public class ModuleDropdown extends Component {
         return this.module;
     }
 
-    boolean expanded = true;
+    boolean expanded = false;
     @Override
     public float getComponentHeight() {
         float height = COMPONENT_HEIGHT;
@@ -56,19 +60,31 @@ public class ModuleDropdown extends Component {
     public void render(float posX, float posY) {
         this.posX = posX;
         this.posY = posY;
-        RenderUtil.drawRectWidth(posX, posY, COMPONENT_WIDTH, COMPONENT_HEIGHT, 0xFF404040);
+        Vector2f mouse = MouseUtil.getMousePos();
+        int componentColour = module.isEnabled() ? 0xFF404070 : 0xFF404040;
+        componentColour = hoveredComponent((int)mouse.x, (int)mouse.y) ?
+                new Color(componentColour).brighter().getRGB() : componentColour;
+        RenderUtil.drawRectWidth(posX, posY, COMPONENT_WIDTH, COMPONENT_HEIGHT, componentColour);
         mc.blockyFontObj.drawStringWithShadow(module.getModuleName(),posX+4,posY + (COMPONENT_HEIGHT /2f - mc.blockyFontObj.FONT_HEIGHT /2f) ,0xFFDADADA);
         posY += COMPONENT_HEIGHT;
-        if(expanded) {
-            for (ValueComponent valueComponent : valueComponents) {
-                valueComponent.render(posX, posY);
-                posY += valueComponent.getComponentHeight();
+        if(valueComponents.size() > 0) {
+            String expandedString = expanded ? "-" : ">";
+            int expandedColour = expanded ? 0xFFBABABA : 0xFFDADADA;
+            expandedColour = hoveredComponent((int)mouse.x, (int)mouse.y) ?
+                    new Color(expandedColour).brighter().getRGB() : expandedColour;
+            mc.blockyFontObj.drawStringWithShadow(expandedString, this.posX + COMPONENT_WIDTH - 10, this.posY + 1 + (COMPONENT_HEIGHT /2f - mc.blockyFontObj.FONT_HEIGHT /2f),expandedColour);
+            if (expanded) {
+                for (ValueComponent valueComponent : valueComponents) {
+                    valueComponent.render(posX, posY);
+                    posY += valueComponent.getComponentHeight();
+                }
             }
         }
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        System.out.println("click");
         if(hoveredComponent(mouseX,mouseY)) {
             if(mouseButton == 0) {
                 module.toggleModule();
@@ -104,6 +120,6 @@ public class ModuleDropdown extends Component {
     }
     public boolean hoveredComponent(int mouseX, int mouseY) {
         return mouseX > posX && mouseX < posX + COMPONENT_WIDTH &&
-                mouseY > posY && mouseY < posX + COMPONENT_HEIGHT;
+                mouseY > posY && mouseY < posY + COMPONENT_HEIGHT;
     }
 }

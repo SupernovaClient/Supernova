@@ -23,9 +23,6 @@ public class Module {
 	public void setModuleDisplayName(String moduleDisplayName) {
 		this.moduleDisplayName = moduleDisplayName;
 	}
-	public void setValues(ArrayList<Value<?>> moduleValues) {
-		this.moduleValues = moduleValues;
-	}
 	public String getModuleName() {
 		return moduleName;
 	}

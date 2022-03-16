@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -46,14 +47,14 @@ public class GuiHUD {
 		int width = mc.blockyFontObj.getStringWidth(watermarkString);
 		RenderUtil.drawRectWidth(x, y, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3, 0x802D2D2D);
 		RenderUtil.drawRectOutlineWidth(x, y, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3,
-				RenderUtil.astolfoColour(0, 10000).getRGB(), 0.8f);
+				HUDModule.hudColourValue.getInt(), 1.5f);
 		mc.blockyFontObj.drawStringWithShadow(watermarkString, x + 2, y + 2, 0xFFFFFFFF);
 	}
 
 	private void renderArrayList(float baseX, float baseY, ScaledResolution sr) {
 		ArrayList<Module> enabledModules = ModuleManager.INSTANCE.getEnabledModules();
 		enabledModules = enabledModules.stream().filter(Module::isVisible).collect(Collectors.toCollection(ArrayList::new));
-		enabledModules = enabledModules.stream().sorted(Comparator.comparingInt((module) -> mc.blockyFontObj.getStringWidth(module.getModuleDisplayName())))
+		enabledModules = enabledModules.stream().sorted(Comparator.comparingInt((module) -> -mc.blockyFontObj.getStringWidth(module.getModuleDisplayName())))
 				.collect(Collectors.toCollection(ArrayList::new));
 
 		int spacing = mc.blockyFontObj.FONT_HEIGHT + 1;

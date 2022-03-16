@@ -11,7 +11,7 @@ public enum Supernova {
 	INSTANCE;
 
 	public static final String CLIENT_NAME = "Supernova";
-	private final Minecraft mc = Minecraft.getMinecraft();
+	public final Minecraft mc = Minecraft.getMinecraft();
 	private EventBus eventBus;
 	private GuiClickGui clickGui;
 
