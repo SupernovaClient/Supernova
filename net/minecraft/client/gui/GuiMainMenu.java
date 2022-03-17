@@ -1,16 +1,19 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
+
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.github.nevalackin.Supernova;
+import io.github.nevalackin.util.client.Alt;
+import io.github.nevalackin.util.client.TimerUtil;
 import io.github.nevalackin.util.render.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -215,9 +218,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
             this.addSingleplayerMultiplayerButtons(j, 24);
         }
 
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 48 + 48, 98, 20, I18n.format("menu.options", new Object[0])));
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 48 + 24, 98, 20, I18n.format("menu.options", new Object[0])));
         this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 48 + 24, 98, 20, I18n.format("menu.quit", new Object[0])));
-        this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 48 + 24));
 
         synchronized (this.threadLock)
         {
@@ -560,8 +562,58 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
             this.drawString(this.fontRendererObj, this.openGLWarning1, this.field_92022_t, this.field_92021_u, -1);
             this.drawString(this.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2, ((GuiButton)this.buttonList.get(0)).yPosition - 12, -1);
         }
+        int altButtonX = this.width / 2 - 125;
+        int altButtonY = this.height / 4 + 45;
+        int altButtonWidth = 18;
+        int altButtonHeight = 99;
+        boolean buttonHovered = mouseX >= altButtonX && mouseX <= altButtonX+altButtonWidth
+                && mouseY >= altButtonY && mouseY <= altButtonY+altButtonHeight;
+        RenderUtil.drawRectWidth(altButtonX,altButtonY,altButtonWidth,altButtonHeight,
+                buttonHovered ? 0xFF2A2A2A : 0xFF222222);
+        RenderUtil.drawRectOutlineWidth(altButtonX,altButtonY,altButtonWidth,altButtonHeight,
+                RenderUtil.astolfoColour(0,7500).getRGB(), 1);
+        drawCenteredString(mc.blockyFontObj,altListExpanded ? ">" : "<",altButtonX+(altButtonWidth/2),altButtonY+46,
+                buttonHovered ? 0xFFEAEAEA : 0xFFDADADA);
+        if(altListExpanded) {
+
+            float altListWidth =  200;
+            float altListX = altButtonX - 10 - altListWidth;
+            float altListHeight =  250;
+            float altListY = (this.height / 4f + 45+50) - altListHeight / 2f;
+            RenderUtil.drawRectWidth(altListX,altListY,altListWidth,altListHeight,0xFF222222);
+
+            RenderUtil.drawRectOutlineWidth(altListX,altListY,altListWidth,altListHeight,
+                    RenderUtil.astolfoColour(0,7500).getRGB(), 1);
+
+            ArrayList<Alt> altList = Supernova.INSTANCE.getAltList();
+            if(currentScreen == altListScreen.ALTS) {
+                drawCenteredString(mc.blockyFontObj,"Alt Manager", (int) (altListX+altListWidth/2f), (int) altListY+10, 0xFFDADADA);
+                RenderUtil.drawRectWidth(altListX+10, altListY+altListHeight-30
+                ,60,20, 0xFF444444);
+                RenderUtil.drawRectWidth(altListX+80, altListY+altListHeight-30
+                        ,60,20, 0xFF444444);
+                RenderUtil.drawRectWidth(altListX+150, altListY+altListHeight-30
+                        ,60,20, 0xFF444444);
+            } else if (currentScreen == altListScreen.LOGIN) {
+                drawCenteredString(mc.blockyFontObj,"Add Alt", (int) (altListX+altListWidth/2f), (int) altListY+10, 0xFFDADADA);
+
+            } else if (currentScreen == altListScreen.DIRECTLOGIN) {
+                drawCenteredString(mc.blockyFontObj,"Direct Login", (int) (altListX+altListWidth/2f), (int) altListY+10, 0xFFDADADA);
+
+            }
+
+        }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+    boolean altListFullyExpanded = false;
+    altListScreen currentScreen = altListScreen.ALTS;
+    TimerUtil altListExpandTimer = new TimerUtil();
+    boolean altListExpanded = false;
+    enum altListScreen {
+        ALTS,
+        LOGIN,
+        DIRECTLOGIN;
     }
 
     /**
@@ -569,6 +621,19 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
      */
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
+        int altButtonX = this.width / 2 - 125;
+        int altButtonY = this.height / 4 + 45;
+        int altButtonWidth = 18;
+        int altButtonHeight = 99;
+        boolean buttonHovered = mouseX >= altButtonX && mouseX <= altButtonX+altButtonWidth
+                && mouseY >= altButtonY && mouseY <= altButtonY+altButtonHeight;
+
+        if(buttonHovered) {
+            this.altListExpanded = !this.altListExpanded;
+            this.altListExpandTimer.reset();
+            return;
+        }
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
         synchronized (this.threadLock)

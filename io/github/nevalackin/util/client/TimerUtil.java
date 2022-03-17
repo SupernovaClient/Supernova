@@ -21,6 +21,9 @@ public class TimerUtil {
         }
         return false;
     }
+    public long elapsed() {
+        return System.currentTimeMillis() - initTime;
+    }
     public void reset() {
         initTime = System.currentTimeMillis();
     }

@@ -6,9 +6,13 @@ import best.azura.eventbus.handler.Listener;
 import io.github.nevalackin.events.network.EventSendPacket;
 import io.github.nevalackin.gui.guiscreen.click.GuiClickGui;
 import io.github.nevalackin.modules.ModuleManager;
+import io.github.nevalackin.oauth.AuthService;
+import io.github.nevalackin.util.client.Alt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.util.ChatComponentText;
+
+import java.util.ArrayList;
 
 public enum Supernova {
 
@@ -18,16 +22,26 @@ public enum Supernova {
 	public final Minecraft mc = Minecraft.getMinecraft();
 	private EventBus eventBus;
 	private GuiClickGui clickGui;
+	private AuthService authService;
+	private ArrayList<Alt> altArrayList = new ArrayList<>();
 
 	public GuiClickGui getClickGui() {
 		return clickGui;
 	}
+	public ArrayList<Alt> getAltList() {
+		return  altArrayList;
+	}
+	public void setAltList(ArrayList<Alt> altList) {
+		this.altArrayList = altList;
+	}
 
 	public void startup() {
+		authService = new AuthService();
 		eventBus = new EventBus();
 		ModuleManager.INSTANCE.init();
 		clickGui = new GuiClickGui();
 		eventBus.register(this);
+		authService.doAuth(null);
 	}
 
 	public void chat(String message) {
