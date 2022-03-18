@@ -2,8 +2,8 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.github.nevalackin.Supernova;
-import io.github.nevalackin.events.network.EventReceivePacket;
+import com.github.supernova.Supernova;
+import com.github.supernova.events.network.EventReceivePacket;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;

@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-import io.github.nevalackin.Supernova;
-import io.github.nevalackin.events.render.EventRender3D;
+import com.github.supernova.Supernova;
+import com.github.supernova.events.render.EventRender3D;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
