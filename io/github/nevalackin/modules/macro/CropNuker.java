@@ -71,13 +71,9 @@ public class CropNuker extends Module {
 			BlockPos nextBlock = getNextBlock();
 			if (nextBlock == null) return;
 			AxisAlignedBB bbox = mc.theWorld.getBlockState(nextBlock).getBlock().getSelectedBoundingBox(mc.theWorld, nextBlock);
-			Vec3 camera = ActiveRenderInfo.getPosition();
-			EntityPlayerSP player = mc.thePlayer;
 			float partialTicks = event.getPartialTicks();
-			double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
-			double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
-			double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
-			bbox = bbox.offset(-d0, -d1, -d2);
+			Vec3 offset = Render3DUtil.getRenderOffset(partialTicks);
+			bbox = bbox.offset(-offset.xCoord, -offset.yCoord, -offset.zCoord);
 			Render3DUtil.drawWireAxisBoundingBox(bbox, RenderUtil.astolfoColour(0, 10000), 255);
 		}
 	};

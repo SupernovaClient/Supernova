@@ -5,7 +5,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -152,5 +154,17 @@ public class Render3DUtil {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
+    }
+    public static Vec3 getRenderOffset(float partialTicks) {
+        double offsetX = mc.thePlayer.lastTickPosX + ( mc.thePlayer.posX -  mc.thePlayer.lastTickPosX) * (double) partialTicks;
+        double offsetY =  mc.thePlayer.lastTickPosY + ( mc.thePlayer.posY -  mc.thePlayer.lastTickPosY) * (double) partialTicks;
+        double offsetZ =  mc.thePlayer.lastTickPosZ + ( mc.thePlayer.posZ -  mc.thePlayer.lastTickPosZ) * (double) partialTicks;
+        return new Vec3(offsetX,offsetY,offsetZ);
+    }
+    public static Vec3 getEntityRenderOffset(Entity entity, float partialTicks) {
+        double offsetX = entity.lastTickPosX + ( entity.posX -  entity.lastTickPosX) * (double) partialTicks;
+        double offsetY =  entity.lastTickPosY + ( entity.posY -  entity.lastTickPosY) * (double) partialTicks;
+        double offsetZ =  entity.lastTickPosZ + ( entity.posZ -  entity.lastTickPosZ) * (double) partialTicks;
+        return new Vec3(offsetX,offsetY,offsetZ);
     }
 }

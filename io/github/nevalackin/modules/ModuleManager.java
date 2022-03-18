@@ -6,6 +6,7 @@ import io.github.nevalackin.Supernova;
 import io.github.nevalackin.events.misc.EventKey;
 import io.github.nevalackin.modules.macro.CropNuker;
 import io.github.nevalackin.modules.render.ClickGUI;
+import io.github.nevalackin.modules.render.DebugESP;
 import io.github.nevalackin.modules.render.HUD;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ModuleManager {
 		modules.add(new HUD());
 		modules.add(new ClickGUI());
 		modules.add(new CropNuker());
+		modules.add(new DebugESP());
 	}
 
 	@EventHandler

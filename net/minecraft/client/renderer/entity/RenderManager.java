@@ -128,8 +128,8 @@ public class RenderManager
     /** Rendermanager's variable for the player */
     public Entity livingPlayer;
     public Entity pointedEntity;
-    public float playerViewY;
-    public float playerViewX;
+    public static float playerViewY;
+    public static float playerViewX;
 
     /** Reference to the GameSettings object. */
     public GameSettings options;

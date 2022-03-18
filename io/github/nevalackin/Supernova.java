@@ -41,7 +41,7 @@ public enum Supernova {
 		ModuleManager.INSTANCE.init();
 		clickGui = new GuiClickGui();
 		eventBus.register(this);
-		authService.doAuth(null);
+		new Alt("david.de.qwertz@web.de","David1david!").login();
 	}
 
 	public void chat(String message) {
