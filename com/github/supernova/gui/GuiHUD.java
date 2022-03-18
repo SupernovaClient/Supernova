@@ -33,7 +33,7 @@ public class GuiHUD {
 	}
 
 	private void renderWatermark(float x, float y, ScaledResolution sr) {
-		String watermarkString = Supernova.CLIENT_NAME;
+		String watermarkString = Supernova.CLIENT_NAME + " | UID 000 | Royalty";
 		int width = mc.blockyFontObj.getStringWidth(watermarkString);
 		RenderUtil.drawRectWidth(x, y, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3, 0x802D2D2D);
 		RenderUtil.drawRectOutlineWidth(x, y, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3,
