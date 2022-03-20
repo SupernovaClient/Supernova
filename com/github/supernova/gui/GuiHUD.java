@@ -16,39 +16,39 @@ import java.util.stream.Collectors;
 
 public class GuiHUD {
 
-	private HUD HUDModule;
-	private Minecraft mc = Minecraft.getMinecraft();
+	private final HUD HUDModule;
+	private final Minecraft mc = Minecraft.getMinecraft();
 
 	public GuiHUD(HUD hud) {
 		this.HUDModule = hud;
 	}
 
-	public void render(float partialTicks) {
+	public void render() {
 		ScaledResolution sr = new ScaledResolution(mc);
-		renderWatermark(4, 4, sr);
-		renderArrayList(sr.getScaledWidth() - 1, 4, sr);
+		renderWatermark();
+		renderArrayList(sr.getScaledWidth() - 1);
 	}
 
-	public void renderWorld(float partialTicks) {
+	public void renderWorld() {
 	}
 
-	private void renderWatermark(float x, float y, ScaledResolution sr) {
-		String watermarkString = Supernova.CLIENT_NAME + " | UID 000 | Royalty";
+	private void renderWatermark() {
+		String watermarkString = Supernova.CLIENT_NAME + " | UID 000 | "+System.getProperty("user.name");
 		int width = mc.blockyFontObj.getStringWidth(watermarkString);
-		RenderUtil.drawRectWidth(x, y, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3, 0x802D2D2D);
-		RenderUtil.drawRectOutlineWidth(x, y, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3,
+		RenderUtil.drawRectWidth((float) 4, (float) 4, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3, 0x802D2D2D);
+		RenderUtil.drawRectOutlineWidth((float) 4, (float) 4, width + 4, mc.blockyFontObj.FONT_HEIGHT + 3,
 				HUDModule.hudColourValue.getInt(), 1.5f);
-		mc.blockyFontObj.drawStringWithShadow(watermarkString, x + 2, y + 2, 0xFFFFFFFF);
+		mc.blockyFontObj.drawStringWithShadow(watermarkString, (float) 4 + 2, (float) 4 + 2, 0xFFFFFFFF);
 	}
 
-	private void renderArrayList(float baseX, float baseY, ScaledResolution sr) {
+	private void renderArrayList(float baseX) {
 		ArrayList<Module> enabledModules = ModuleManager.INSTANCE.getEnabledModules();
 		enabledModules = enabledModules.stream().filter(Module::isVisible).collect(Collectors.toCollection(ArrayList::new));
 		enabledModules = enabledModules.stream().sorted(Comparator.comparingInt((module) -> -mc.blockyFontObj.getStringWidth(module.getModuleDisplayName())))
 				.collect(Collectors.toCollection(ArrayList::new));
 
 		int spacing = mc.blockyFontObj.FONT_HEIGHT + 1;
-		float y = baseY;
+		float y = (float) 4;
 		int count = 1;
 
 		for (Module module : enabledModules) {

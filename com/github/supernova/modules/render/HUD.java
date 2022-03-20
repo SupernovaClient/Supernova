@@ -10,6 +10,7 @@ import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
 import com.github.supernova.value.impl.ColourValue;
 
+@SuppressWarnings("unused")
 @ModuleAnnotation(name = "HUD", displayName = "HUD", description = "Show this", category = Category.RENDER)
 public class HUD extends Module {
 
@@ -23,13 +24,9 @@ public class HUD extends Module {
 	}
 
 	@EventHandler
-	public final Listener<EventRender2D> eventRender2DListener = eventRender2D -> {
-		hud.render(eventRender2D.getPartialTicks());
-	};
+	public final Listener<EventRender2D> eventRender2DListener = eventRender2D -> hud.render();
 
 	@EventHandler
-	public final Listener<EventRender3D> eventRender3DListener = eventRender3D -> {
-		hud.renderWorld(eventRender3D.getPartialTicks());
-	};
+	public final Listener<EventRender3D> eventRender3DListener = eventRender3D -> hud.renderWorld();
 
 }
