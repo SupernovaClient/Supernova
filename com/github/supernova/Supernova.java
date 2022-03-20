@@ -6,13 +6,23 @@ import best.azura.eventbus.handler.Listener;
 import com.github.supernova.events.network.EventSendPacket;
 import com.github.supernova.gui.guiscreen.click.GuiClickGui;
 import com.github.supernova.modules.ModuleManager;
-import com.github.supernova.oauth.AuthService;
+import com.github.supernova.util.client.AccountType;
 import com.github.supernova.util.client.Alt;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.util.ChatComponentText;
+import optifine.Json;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 
 public enum Supernova {
 
@@ -22,8 +32,9 @@ public enum Supernova {
 	public final Minecraft mc = Minecraft.getMinecraft();
 	private EventBus eventBus;
 	private GuiClickGui clickGui;
-	private AuthService authService;
+	private MicrosoftAuthenticator authService;
 	private ArrayList<Alt> altArrayList = new ArrayList<>();
+	private JsonParser parser = new JsonParser();
 
 	public GuiClickGui getClickGui() {
 		return clickGui;
@@ -34,14 +45,43 @@ public enum Supernova {
 	public void setAltList(ArrayList<Alt> altList) {
 		this.altArrayList = altList;
 	}
+	public MicrosoftAuthenticator getAuthenticator() {
+		return this.authService;
+	}
+
+	public void saveAltList(File file) {
+
+	}
+	public void updateAltList(File file) {
+		if(file.exists()) {
+			try {
+				List<String> lines = Files.readAllLines(file.toPath());
+				StringBuilder builder = new StringBuilder();
+				lines.forEach(builder::append);
+				JsonObject object = (JsonObject) parser.parse(builder.toString());
+				JsonArray altArray = object.getAsJsonArray("alts");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void startup() {
-		authService = new AuthService();
+		authService = new MicrosoftAuthenticator();
 		eventBus = new EventBus();
 		ModuleManager.INSTANCE.init();
 		clickGui = new GuiClickGui();
 		eventBus.register(this);
-		new Alt("olen.omenaxdxd@gmail.com","volvov700").login();
+		//new Alt("olen.omenaxdxd@gmail.com","volvov700").login();
+		//new Alt("joeybouwmans@gmail.com","Joejoe20081610pepper").login();
+		//microsoftLogin();
+
+	}
+
+	private void microsoftLogin() {
+		authService.loginWithAsyncWebview().thenAccept((auth) -> {
+			new Alt(AccountType.MICROSOFT, auth.getProfile().getName(), auth.getProfile().getId(), auth.getAccessToken()).login();
+		});
 	}
 
 	public void chat(String message) {

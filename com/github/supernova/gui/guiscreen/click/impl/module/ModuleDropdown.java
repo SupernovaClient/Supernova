@@ -4,6 +4,8 @@ import com.github.supernova.gui.guiscreen.click.impl.CategoryDropdown;
 import com.github.supernova.gui.guiscreen.click.impl.Component;
 import com.github.supernova.gui.guiscreen.click.impl.module.values.*;
 import com.github.supernova.modules.Module;
+import com.github.supernova.modules.ModuleManager;
+import com.github.supernova.modules.render.HUD;
 import com.github.supernova.util.input.MouseUtil;
 import com.github.supernova.util.render.RenderUtil;
 import com.github.supernova.value.Value;
@@ -62,7 +64,8 @@ public class ModuleDropdown extends Component {
 		this.posX = posX;
 		this.posY = posY;
 		Vector2f mouse = MouseUtil.getMousePos();
-		int componentColour = module.isEnabled() ? 0xFF404070 : 0xFF404040;
+		int componentColour = module.isEnabled() ?
+				((HUD)ModuleManager.INSTANCE.get(HUD.class)).hudColourValue.getCurrentValue().getRGB() : 0xFF404040;
 		componentColour = hoveredComponent((int) mouse.x, (int) mouse.y) ?
 				new Color(componentColour).brighter().getRGB() : componentColour;
 		RenderUtil.drawRectWidth(posX, posY, COMPONENT_WIDTH, COMPONENT_HEIGHT, componentColour);
@@ -85,7 +88,6 @@ public class ModuleDropdown extends Component {
 
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		System.out.println("click");
 		if (hoveredComponent(mouseX, mouseY)) {
 			if (mouseButton == 0) {
 				module.toggleModule();

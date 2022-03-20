@@ -6,7 +6,9 @@ import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
+import org.lwjgl.Sys;
 
 import java.net.Proxy;
 
@@ -14,6 +16,10 @@ public class Alt {
 
     private boolean invalid, cracked;
     private String username, password, displayName;
+    private AccountType type;
+
+    private String microsoftID;
+    private String microsoftAccessToken;
 
     public Alt(String username, String password) {
         this.username = username;
@@ -21,6 +27,7 @@ public class Alt {
         displayName = username;
         cracked = password.equals("");
         invalid = false;
+        type = AccountType.MOJANG;
     }
 
     public Alt(String username) {
@@ -29,6 +36,15 @@ public class Alt {
         displayName = username;
         cracked = true;
         invalid = false;
+        type = AccountType.MOJANG;
+    }
+
+    public Alt(AccountType type, String name, String id, String accessToken) {
+        this.type = type;
+        this.username = name;
+        displayName = username;
+        microsoftID = id;
+        microsoftAccessToken = accessToken;
     }
 
     private void savePassword(String password) {
@@ -64,6 +80,10 @@ public class Alt {
     }
 
     public void login() {
+        if(type == AccountType.MICROSOFT) {
+            Minecraft.getMinecraft().session = new Session(username, microsoftID, microsoftAccessToken, "mojang");
+            return;
+        }
         if(cracked || getPassword().equals("")) {
             Supernova.INSTANCE.mc.session = new Session(username, "", "", "mojang");
             invalid = false;

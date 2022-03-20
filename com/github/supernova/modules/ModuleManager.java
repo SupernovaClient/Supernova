@@ -4,6 +4,7 @@ import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
 import com.github.supernova.Supernova;
 import com.github.supernova.events.misc.EventKey;
+import com.github.supernova.modules.combat.BowAura;
 import com.github.supernova.modules.macro.CropNuker;
 import com.github.supernova.modules.render.ClickGUI;
 import com.github.supernova.modules.render.DebugESP;
@@ -28,6 +29,7 @@ public class ModuleManager {
 		modules.add(new ClickGUI());
 		modules.add(new CropNuker());
 		modules.add(new DebugESP());
+		modules.add(new BowAura());
 	}
 
 	@EventHandler

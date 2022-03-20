@@ -52,7 +52,8 @@ public class GuiHUD {
 		int count = 1;
 
 		for (Module module : enabledModules) {
-			int currentColour = ColourUtil.interpolateColorsDynamic(10, count * 20, new Color(0xFFAA77FF), new Color(0xFFAA77FF).darker().darker()).getRGB();
+
+			int currentColour = HUDModule.hudColourValue.getCurrentValue(count*40).getRGB();
 			int width = mc.blockyFontObj.getStringWidth(module.getModuleDisplayName());
 
 			RenderUtil.drawRectWidth(baseX - width - 8, y - 1.3f, width + 5, mc.blockyFontObj.FONT_HEIGHT + 0.8f, 0x60444444);

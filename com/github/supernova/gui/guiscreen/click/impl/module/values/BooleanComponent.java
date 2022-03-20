@@ -47,7 +47,6 @@ public class BooleanComponent extends ValueComponent {
 		float currentXPos = getComponentWidth() - 24;
 
 		currentXPos += minXPos;
-		System.out.println(value.getCurrentValue());
 		RenderUtil.drawRectWidth(currentXPos - 0.5f, posY + 1, 14, getComponentHeight() - 8,
 				value.getCurrentValue() ? RenderUtil.astolfoColour((int) posY,10 * 1000).getRGB() : 0xAAAAAAAA);
 		RenderUtil.drawRectOutlineWidth(currentXPos - 0.5f, posY + 1, 14, getComponentHeight() - 8,
