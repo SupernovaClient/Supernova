@@ -122,6 +122,10 @@ public class CategoryDropdown extends Component {
 		}
 	}
 
+	public ArrayList<ModuleDropdown> getModuleDropdowns() {
+		return moduleDropdowns;
+	}
+
 	public float getX() {
 		return posX;
 	}

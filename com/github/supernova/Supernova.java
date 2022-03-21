@@ -75,8 +75,8 @@ public enum Supernova {
 		clickGui = new GuiClickGui();
 		eventBus.register(this);
 		//new Alt("olen.omenaxdxd@gmail.com","volvov700").login();
-		//new Alt("joeybouwmans@gmail.com","Joejoe20081610pepper").login();
-		microsoftLogin();
+		new Alt("joeybouwmans@gmail.com","Joejoe20081610pepper").login();
+		//microsoftLogin();
 		//new Alt("mataishangthorn@gmail.com", "Drakengard2").login();
 	}
 

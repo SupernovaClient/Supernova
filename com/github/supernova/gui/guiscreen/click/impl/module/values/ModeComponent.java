@@ -2,9 +2,11 @@ package com.github.supernova.gui.guiscreen.click.impl.module.values;
 
 import com.github.supernova.gui.guiscreen.click.impl.module.ModuleDropdown;
 import com.github.supernova.util.client.ModeEnum;
+import com.github.supernova.util.input.MouseUtil;
 import com.github.supernova.util.render.RenderUtil;
 import com.github.supernova.value.impl.EnumValue;
 
+import javax.vecmath.Vector2f;
 import java.io.IOException;
 
 public class ModeComponent extends ValueComponent {
@@ -23,7 +25,9 @@ public class ModeComponent extends ValueComponent {
         this.posX = posX;
         this.posY = posY;
         RenderUtil.drawRectWidth(posX,posY,getComponentWidth(),getComponentHeight(),0xFF3A3A3A);
-        mc.blockyFontObj.drawStringWithShadow(value.getValueName(),posX+5,posY+COMPONENT_HEIGHT/2f-mc.blockyFontObj.FONT_HEIGHT/2f, 0xFFDADADA);
+        Vector2f mouse = MouseUtil.getMousePos();
+        mc.blockyFontObj.drawStringWithShadow(value.getValueName(),posX+5,posY+COMPONENT_HEIGHT/2f-mc.blockyFontObj.FONT_HEIGHT/2f,
+                hoveredComponent((int) mouse.x, (int) mouse.y) ? 0xFFEEEEEE : 0xFFDADADA);
         int width = mc.blockyFontObj.getStringWidth(value.getValueString());
         mc.blockyFontObj.drawStringWithShadow(value.getValueString(),posX+COMPONENT_WIDTH-width-5,posY+COMPONENT_HEIGHT/2f-mc.blockyFontObj.FONT_HEIGHT/2f, 0xFFDADADA);
     }
@@ -51,5 +55,9 @@ public class ModeComponent extends ValueComponent {
     public boolean hovered(int mouseX, int mouseY) {
         return mouseX > posX && mouseX < posX + getComponentWidth() &&
                 mouseY > posY && mouseY < posY + getComponentHeight();
+    }
+    public boolean hoveredComponent(int mouseX, int mouseY) {
+        return mouseX > posX && mouseX < posX + COMPONENT_WIDTH &&
+                mouseY > posY && mouseY < posY + COMPONENT_HEIGHT;
     }
 }

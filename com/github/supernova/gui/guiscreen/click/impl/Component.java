@@ -9,7 +9,7 @@ public abstract class Component {
     public static Minecraft mc = Minecraft.getMinecraft();
 
     public static final float COMPONENT_HEIGHT = 20;
-    public static float COMPONENT_WIDTH = 120;
+    public static final float COMPONENT_WIDTH = 120;
 
     public float getComponentHeight() {
         return COMPONENT_HEIGHT;

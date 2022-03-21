@@ -17,4 +17,7 @@ public class MathUtil {
     public static double millisToBPS(int millis) {
         return 1000d / millis;
     }
+    public static double roundToNearest(double value, double nearestValue) {
+        return nearestValue*(Math.round(value/nearestValue));
+    }
 }

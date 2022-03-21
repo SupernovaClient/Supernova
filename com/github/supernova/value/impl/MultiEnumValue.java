@@ -31,6 +31,22 @@ public class MultiEnumValue<T extends Enum<T> & ModeEnum> extends Value<ArrayLis
         return strings;
     }
 
+    public void toggleValue(int index) {
+        index = Math.max(0,Math.min(index, enumValues.size()-1));
+        T toggleValue = enumValues.get(index);
+        if (currentValue.contains(toggleValue)) {
+            currentValue.remove(toggleValue);
+        } else {
+            currentValue.add(toggleValue);
+        }
+    }
+
+    public boolean isEnabled(int index) {
+        index = Math.max(0,Math.min(index, enumValues.size()-1));
+        T toggleValue = enumValues.get(index);
+        return currentValue.contains(toggleValue);
+    }
+
     public ArrayList<T> getAllValues() {
         return enumValues;
     }

@@ -569,7 +569,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         RenderUtil.drawRectOutlineWidth(altButtonX,altButtonY,altButtonWidth,altButtonHeight,
                 ColourUtil.astolfoColour(0,7500).getRGB(), 1);
         drawCenteredString(mc.blockyFontObj,altListExpanded ? ">" : "<",altButtonX+(altButtonWidth/2),altButtonY+46,
-                buttonHovered ? 0xFFEAEAEA : 0xFFDADADA);
+                buttonHovered ? 0xFFEEEEEE : 0xFFDADADA);
         if(altListExpanded) {
 
             float altListWidth =  200;
