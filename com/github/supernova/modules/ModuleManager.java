@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ModuleManager {
+public enum ModuleManager {
 
-	public static final ModuleManager INSTANCE = new ModuleManager();
+	INSTANCE;
 
 	private final ArrayList<Module> modules = new ArrayList<>();
 	private boolean initiated;
@@ -39,7 +39,7 @@ public class ModuleManager {
 	}
 
 	@EventHandler
-	public Listener<EventKey> eventKeyListener = eventKey -> {
+	public final Listener<EventKey> eventKeyListener = eventKey -> {
 		for (Module m : modules) {
 			if (m.getKeyCode() == eventKey.getKeyCode()) {
 				m.toggleModule();
