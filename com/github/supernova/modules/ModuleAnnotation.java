@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ModuleAnnotation {
 
+
 	String name();
 
 	String displayName();
@@ -14,7 +15,7 @@ public @interface ModuleAnnotation {
 
 	int keyBind() default 0;
 
-	Category category();
+	Category category() default Category.OTHER;
 
 	boolean visible() default true;
 

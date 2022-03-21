@@ -2,7 +2,6 @@ package com.github.supernova.modules.macro;
 
 import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
-import com.github.supernova.Supernova;
 import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender2D;
@@ -36,7 +35,7 @@ public class CropNuker extends Module {
 
 	public BooleanValue autoMoveValue = new BooleanValue("Auto Move", false);
 	public MultiEnumValue<EnumCropTypes> nukerBlockTargetValue = new MultiEnumValue<>("Crops", EnumCropTypes.values(),
-			EnumCropTypes.NETHERWART, EnumCropTypes.WHEAT, EnumCropTypes.POTATO, EnumCropTypes.CARROT);
+			EnumCropTypes.values());
 	public NumberValue breakRangeValue = new NumberValue("Range", 5.5, 0.1, 6, 0.1);
 	public NumberValue breakBPSValue = new NumberValue("BPS", 120, 1, 200, 1);
 
@@ -68,7 +67,6 @@ public class CropNuker extends Module {
 		mc.blockyFontObj.drawStringWithShadow(blocksToBreak.size() + "", 5, 20, 0xFFDADADA);
 		mc.blockyFontObj.drawStringWithShadow(brokenBlocks.size() + "", 5, 30, 0xFFDADADA);
 
-
 		// Just ignore this please, no other event got called fast enough so I just threw it here
 		// ( I also didn't want to use a thread )
 		if (blocksToBreak.size() > 0) {
@@ -83,7 +81,7 @@ public class CropNuker extends Module {
 				lastClearTimer.reset();
 			}
 		}
-		if(lastClearTimer.elapsed(125,true)) {
+		if (lastClearTimer.elapsed(125, true)) {
 			brokenBlocks.clear();
 		}
 	};
@@ -110,8 +108,8 @@ public class CropNuker extends Module {
 	};
 
 	private double getMovementSpeed() {
-		double baseSpeed = 0.22f;
-		return baseSpeed * (SkyblockUtil.getSpeedPercentage()/100f);
+		double baseSpeed = 0.2873f;
+		return baseSpeed * (SkyblockUtil.getSpeedPercentage() / 100f);
 	}
 
 	private BlockPos getNextBlock() {
@@ -131,7 +129,7 @@ public class CropNuker extends Module {
 		BlockPos pos2 = playerPos.add(range, range, range);
 		ArrayList<BlockPos> targetBlocks = new ArrayList<>();
 		for (BlockPos pos : BlockPos.getAllInBox(pos1, pos2)) {
-			if(brokenBlocks.contains(pos)) continue;
+			if (brokenBlocks.contains(pos)) continue;
 			IBlockState blockState = mc.theWorld.getBlockState(pos);
 			Block block = blockState.getBlock();
 			for (EnumCropTypes type : nukerBlockTargetValue.getEnabledValues()) {
@@ -181,7 +179,9 @@ public class CropNuker extends Module {
 		NETHERWART(BlockNetherWart.class),
 		WHEAT(BlockCrops.class),
 		CARROT(BlockCarrot.class),
-		POTATO(BlockPotato.class);
+		POTATO(BlockPotato.class),
+		FLOWER(BlockFlower.class),
+		PUMPKIN(BlockPumpkin.class);
 
 		Class<? extends Block> blockType = null;
 

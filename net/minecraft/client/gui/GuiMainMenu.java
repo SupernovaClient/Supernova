@@ -540,7 +540,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         GlStateManager.scale(f, f, f);
         this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
         GlStateManager.popMatrix();
-        String s = "Minecraft 1.8.8";
+        String s = "Minecraft 1.8.8 | " + Supernova.CLIENT_NAME + "#";
 
         if (this.mc.isDemo())
         {

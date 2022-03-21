@@ -66,7 +66,7 @@ public class DebugESP extends Module {
             if(entity instanceof EntityLivingBase) {
                 EntityLivingBase ent = (EntityLivingBase) entity;
                 boolean shouldAttack = !isActualPlayer(ent);
-                renderData(entity, event.getPartialTicks(), shouldAttack+"", ent.getCustomNameTag(), ent.getName());
+                renderData(entity, event.getPartialTicks(), String.valueOf(shouldAttack + "Balls"), ent.getCustomNameTag(), ent.getName());
                 if(!shouldAttack) {
                 Vec3 offset = Render3DUtil.getRenderOffset(event.getPartialTicks());
                 Vec3 entOffset = Render3DUtil.getEntityRenderOffset(ent, event.getPartialTicks());

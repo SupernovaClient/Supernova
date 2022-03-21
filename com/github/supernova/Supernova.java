@@ -15,11 +15,9 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.util.ChatComponentText;
-import optifine.Json;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +37,15 @@ public enum Supernova {
 	public GuiClickGui getClickGui() {
 		return clickGui;
 	}
+
 	public ArrayList<Alt> getAltList() {
-		return  altArrayList;
+		return altArrayList;
 	}
+
 	public void setAltList(ArrayList<Alt> altList) {
 		this.altArrayList = altList;
 	}
+
 	public MicrosoftAuthenticator getAuthenticator() {
 		return this.authService;
 	}
@@ -52,8 +53,9 @@ public enum Supernova {
 	public void saveAltList(File file) {
 
 	}
+
 	public void updateAltList(File file) {
-		if(file.exists()) {
+		if (file.exists()) {
 			try {
 				List<String> lines = Files.readAllLines(file.toPath());
 				StringBuilder builder = new StringBuilder();
@@ -74,8 +76,8 @@ public enum Supernova {
 		eventBus.register(this);
 		//new Alt("olen.omenaxdxd@gmail.com","volvov700").login();
 		//new Alt("joeybouwmans@gmail.com","Joejoe20081610pepper").login();
-		//microsoftLogin();
-
+		microsoftLogin();
+		//new Alt("mataishangthorn@gmail.com", "Drakengard2").login();
 	}
 
 	private void microsoftLogin() {

@@ -6,11 +6,13 @@ import com.github.supernova.Supernova;
 import com.github.supernova.events.misc.EventKey;
 import com.github.supernova.modules.combat.BowAura;
 import com.github.supernova.modules.macro.CropNuker;
+import com.github.supernova.modules.movement.Speed;
 import com.github.supernova.modules.render.ClickGUI;
 import com.github.supernova.modules.render.DebugESP;
 import com.github.supernova.modules.render.HUD;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class ModuleManager {
@@ -25,11 +27,15 @@ public class ModuleManager {
 		initiated = true;
 		Supernova.INSTANCE.getEventBus().register(this);
 
-		modules.add(new HUD());
-		modules.add(new ClickGUI());
-		modules.add(new CropNuker());
-		modules.add(new DebugESP());
-		modules.add(new BowAura());
+		modules.addAll(Arrays.asList(
+				new HUD(),
+				new ClickGUI(),
+				new CropNuker(),
+				new DebugESP(),
+				new BowAura(),
+				new Speed(),
+				new Speed())
+		);
 	}
 
 	@EventHandler
