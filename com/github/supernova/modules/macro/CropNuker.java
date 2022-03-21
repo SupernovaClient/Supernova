@@ -11,7 +11,6 @@ import com.github.supernova.modules.Category;
 import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
 import com.github.supernova.util.MathUtil;
-import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.util.client.TimerUtil;
 import com.github.supernova.util.random.SkyblockUtil;
 import com.github.supernova.util.render.Render3DUtil;
@@ -39,7 +38,7 @@ public class CropNuker extends Module {
 	public MultiEnumValue<EnumCropTypes> nukerBlockTargetValue = new MultiEnumValue<>("Crops", EnumCropTypes.values(),
 			EnumCropTypes.NETHERWART, EnumCropTypes.WHEAT, EnumCropTypes.POTATO, EnumCropTypes.CARROT);
 	public NumberValue breakRangeValue = new NumberValue("Range", 5.5, 0.1, 6, 0.1);
-	public NumberValue breakBPSValue = new NumberValue("BPS", 55, 1, 200, 1);
+	public NumberValue breakBPSValue = new NumberValue("BPS", 120, 1, 200, 1);
 
 	private final TimerUtil breakTimer = new TimerUtil();
 	private final TimerUtil lastClearTimer = new TimerUtil();
@@ -84,7 +83,7 @@ public class CropNuker extends Module {
 				lastClearTimer.reset();
 			}
 		}
-		if(lastClearTimer.elapsed(100,true)) {
+		if(lastClearTimer.elapsed(125,true)) {
 			brokenBlocks.clear();
 		}
 	};
@@ -178,23 +177,16 @@ public class CropNuker extends Module {
 		return Integer.MAX_VALUE;
 	}
 
-	enum EnumCropTypes implements ModeEnum{
-		NETHERWART(BlockNetherWart.class, "Nether Wart"),
-		WHEAT(BlockCrops.class, "Wheat"),
-		CARROT(BlockCarrot.class, "Carrot"),
-		POTATO(BlockPotato.class, "Potato");
+	enum EnumCropTypes {
+		NETHERWART(BlockNetherWart.class),
+		WHEAT(BlockCrops.class),
+		CARROT(BlockCarrot.class),
+		POTATO(BlockPotato.class);
 
 		Class<? extends Block> blockType = null;
-		private final String name;
 
-		EnumCropTypes(Class<? extends Block> blockType, String name) {
+		EnumCropTypes(Class<? extends Block> blockType) {
 			this.blockType = blockType;
-			this.name = name;
-		}
-
-		@Override
-		public String getName() {
-			return name;
 		}
 	}
 

@@ -28,18 +28,7 @@ public class RenderUtil {
         Gui.drawRect(x-thickness,y,x,y+height,colour); //LEFT
         Gui.drawRect(x+width+thickness,y,x+width,y+height,colour); //RIGHT
     }
-    public static Color astolfoColour(int yOffset, double speed) {
-        float hue = (float) (((System.currentTimeMillis() + yOffset) % speed) / speed);
-        if (hue > 0.5) hue = 0.5F - (hue - 0.5f);
-        hue += 0.5F;
-        return Color.getHSBColor(hue, 0.5f, 1F);
-    }
-    public static Color getRainbow(double speed, double offset, float saturation, float brightness) {
-        long currentTime = System.currentTimeMillis()/10;
-        currentTime *= speed;
-        currentTime += offset;
-        return Color.getHSBColor((currentTime%360)/360f,saturation,brightness);
-    }
+  
     public static void drawGradientVertical(float left, float top, float right, float bottom, int startColor, int endColor)
     {
         float f = (float)(startColor >> 24 & 255) / 255.0F;

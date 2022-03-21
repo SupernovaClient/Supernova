@@ -1,5 +1,6 @@
 package net.minecraft.client.gui;
 
+import com.github.supernova.util.render.ColourUtil;
 import com.google.common.collect.Lists;
 
 import java.io.BufferedReader;
@@ -540,7 +541,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         GlStateManager.scale(f, f, f);
         this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
         GlStateManager.popMatrix();
-        String s = "Minecraft 1.8.8";
+        String s = "Minecraft 1.8.8 | " + Supernova.CLIENT_NAME + "#";
 
         if (this.mc.isDemo())
         {
@@ -566,7 +567,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         RenderUtil.drawRectWidth(altButtonX,altButtonY,altButtonWidth,altButtonHeight,
                 buttonHovered ? 0xFF2A2A2A : 0xFF222222);
         RenderUtil.drawRectOutlineWidth(altButtonX,altButtonY,altButtonWidth,altButtonHeight,
-                RenderUtil.astolfoColour(0,7500).getRGB(), 1);
+                ColourUtil.astolfoColour(0,7500).getRGB(), 1);
         drawCenteredString(mc.blockyFontObj,altListExpanded ? ">" : "<",altButtonX+(altButtonWidth/2),altButtonY+46,
                 buttonHovered ? 0xFFEAEAEA : 0xFFDADADA);
         if(altListExpanded) {
@@ -578,7 +579,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
             RenderUtil.drawRectWidth(altListX,altListY,altListWidth,altListHeight,0xFF222222);
 
             RenderUtil.drawRectOutlineWidth(altListX,altListY,altListWidth,altListHeight,
-                    RenderUtil.astolfoColour(0,7500).getRGB(), 1);
+                    ColourUtil.astolfoColour(0,7500).getRGB(), 1);
 
             ArrayList<Alt> altList = Supernova.INSTANCE.getAltList();
             if(currentScreen == altListScreen.ALTS) {

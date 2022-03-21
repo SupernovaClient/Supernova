@@ -6,7 +6,6 @@ import com.github.supernova.Supernova;
 import com.github.supernova.events.misc.EventKey;
 import com.github.supernova.modules.combat.BowAura;
 import com.github.supernova.modules.macro.CropNuker;
-import com.github.supernova.modules.player.Timer;
 import com.github.supernova.modules.render.ClickGUI;
 import com.github.supernova.modules.render.DebugESP;
 import com.github.supernova.modules.render.HUD;
@@ -31,7 +30,6 @@ public class ModuleManager {
 		modules.add(new CropNuker());
 		modules.add(new DebugESP());
 		modules.add(new BowAura());
-		modules.add(new Timer());
 	}
 
 	@EventHandler

@@ -1,4 +1,4 @@
-package com.github.supernova.util;
+package com.github.supernova.util.math;
 
 public class MathUtil {
     public static int linearInterpolate(int a, int b, double percent) {
