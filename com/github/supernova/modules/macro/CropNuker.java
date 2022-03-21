@@ -2,7 +2,6 @@ package com.github.supernova.modules.macro;
 
 import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
-import com.github.supernova.Supernova;
 import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender2D;
@@ -10,11 +9,12 @@ import com.github.supernova.events.render.EventRender3D;
 import com.github.supernova.modules.Category;
 import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
-import com.github.supernova.util.MathUtil;
+import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.util.client.TimerUtil;
-import com.github.supernova.util.random.SkyblockUtil;
+import com.github.supernova.util.game.SkyblockUtil;
+import com.github.supernova.util.math.MathUtil;
+import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.Render3DUtil;
-import com.github.supernova.util.render.RenderUtil;
 import com.github.supernova.value.impl.BooleanValue;
 import com.github.supernova.value.impl.MultiEnumValue;
 import com.github.supernova.value.impl.NumberValue;
@@ -97,7 +97,7 @@ public class CropNuker extends Module {
 			float partialTicks = event.getPartialTicks();
 			Vec3 offset = Render3DUtil.getRenderOffset(partialTicks);
 			bbox = bbox.offset(-offset.xCoord, -offset.yCoord, -offset.zCoord);
-			Render3DUtil.drawWireAxisBoundingBox(bbox, RenderUtil.astolfoColour(0, 10000), 255);
+			Render3DUtil.drawWireAxisBoundingBox(bbox, ColourUtil.astolfoColour(0, 10000), 255);
 		}
 	};
 
@@ -177,16 +177,22 @@ public class CropNuker extends Module {
 		return Integer.MAX_VALUE;
 	}
 
-	enum EnumCropTypes {
-		NETHERWART(BlockNetherWart.class),
-		WHEAT(BlockCrops.class),
-		CARROT(BlockCarrot.class),
-		POTATO(BlockPotato.class);
+	enum EnumCropTypes implements ModeEnum {
+		NETHERWART(BlockNetherWart.class, "Nether Wart"),
+		WHEAT(BlockCrops.class, "Wheat"),
+		CARROT(BlockCarrot.class, "Carrot"),
+		POTATO(BlockPotato.class, "Potato");
 
 		Class<? extends Block> blockType = null;
-
-		EnumCropTypes(Class<? extends Block> blockType) {
+		private String name;
+		EnumCropTypes(Class<? extends Block> blockType, String name) {
+			this.name = name;
 			this.blockType = blockType;
+		}
+
+		@Override
+		public String getName() {
+			return null;
 		}
 	}
 
