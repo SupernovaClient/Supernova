@@ -2,39 +2,29 @@ package com.github.supernova.modules.render;
 
 import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
-import com.github.supernova.Supernova;
 import com.github.supernova.events.network.EventReceivePacket;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender3D;
 import com.github.supernova.modules.Category;
 import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
-import com.github.supernova.util.random.SkyblockUtil;
+import com.github.supernova.util.game.SkyblockUtil;
+import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.Render3DUtil;
 import com.github.supernova.util.render.RenderUtil;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @ModuleAnnotation(name = "Debug ESP", description = "Shows entity data", category = Category.RENDER, displayName = "Debug ESP")
 public class DebugESP extends Module {
@@ -124,7 +114,7 @@ public class DebugESP extends Module {
         for(String line : data) {
             int xPos = mc.blockyFontObj.getStringWidth(line)/2;
             yPos -= 10;
-            mc.blockyFontObj.drawStringWithShadow(line,-xPos,yPos, RenderUtil.astolfoColour(index*40, 10000).getRGB());
+            mc.blockyFontObj.drawStringWithShadow(line,-xPos,yPos, ColourUtil.astolfoColour(index*40, 10000).getRGB());
             index++;
         }
 

@@ -2,6 +2,7 @@ package com.github.supernova.gui.guiscreen.click.impl.module.values;
 
 import com.github.supernova.gui.guiscreen.click.impl.module.ModuleDropdown;
 import com.github.supernova.util.input.MouseUtil;
+import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.RenderUtil;
 import com.github.supernova.value.impl.BooleanValue;
 import org.lwjgl.input.Mouse;
@@ -48,7 +49,7 @@ public class BooleanComponent extends ValueComponent {
 
 		currentXPos += minXPos;
 		RenderUtil.drawRectWidth(currentXPos - 0.5f, posY + 1, 14, getComponentHeight() - 8,
-				value.getCurrentValue() ? RenderUtil.astolfoColour((int) posY,10 * 1000).getRGB() : 0xAAAAAAAA);
+				value.getCurrentValue() ? ColourUtil.astolfoColour((int) posY,10 * 1000).getRGB() : 0xAAAAAAAA);
 		RenderUtil.drawRectOutlineWidth(currentXPos - 0.5f, posY + 1, 14, getComponentHeight() - 8,
 				0xDD222222, 1);
 		mc.blockyFontObj.drawStringWithShadow(value.getValueName(), (int) posX + 2, (int) posY + 4, -1);

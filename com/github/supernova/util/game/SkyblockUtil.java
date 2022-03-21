@@ -1,12 +1,10 @@
-package com.github.supernova.util.random;
+package com.github.supernova.util.game;
 
 import com.github.supernova.Supernova;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
-import org.lwjgl.Sys;
 
 import java.util.List;
 

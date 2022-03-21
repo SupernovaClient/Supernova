@@ -8,9 +8,13 @@ public enum Category {
 	OTHER("Other"),
 	MACRO("Macro");
 
-	final String name;
+	private final String name;
 
 	Category(String name) {
 		this.name = name;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

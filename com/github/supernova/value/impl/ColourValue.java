@@ -28,7 +28,7 @@ public class ColourValue extends Value<Color> {
 
 	public Color getCurrentValue(int offset, int speed) {
 		if (colourMode == ColourModes.ASTOLFO) {
-			return RenderUtil.astolfoColour(offset, speed);
+			return ColourUtil.astolfoColour(offset, speed);
 		}
 		Color baseColour = super.getCurrentValue();
 		if (colourMode == ColourModes.DEFAULT) {

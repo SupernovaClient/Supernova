@@ -5,6 +5,7 @@ import com.github.supernova.gui.guiscreen.click.impl.module.ModuleDropdown;
 import com.github.supernova.modules.Category;
 import com.github.supernova.modules.ModuleManager;
 import com.github.supernova.util.input.MouseUtil;
+import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.RenderUtil;
 
 import javax.vecmath.Vector2f;
@@ -59,9 +60,9 @@ public class CategoryDropdown extends Component {
 		}
 
 		float startX = posX, startY = posY;
-		RenderUtil.drawRectOutlineWidth(posX, posY, getComponentWidth(), getComponentHeight(), RenderUtil.astolfoColour(0, 10000).getRGB(), 0.8f);
+		RenderUtil.drawRectOutlineWidth(posX, posY, getComponentWidth(), getComponentHeight(), ColourUtil.astolfoColour(0, 10000).getRGB(), 0.8f);
 		RenderUtil.drawRectWidth(posX, posY, COMPONENT_WIDTH, COMPONENT_HEIGHT, 0xFF303030);
-		mc.blockyFontObj.drawStringWithShadow(category.name, posX + 4, posY + 1 + (COMPONENT_HEIGHT / 2f - mc.blockyFontObj.FONT_HEIGHT / 2f), 0xFFDADADA);
+		mc.blockyFontObj.drawStringWithShadow(category.getName(), posX + 4, posY + 1 + (COMPONENT_HEIGHT / 2f - mc.blockyFontObj.FONT_HEIGHT / 2f), 0xFFDADADA);
 		posY += COMPONENT_HEIGHT;
 		if (expanded && moduleDropdowns.size() > 0) {
 			for (ModuleDropdown moduleDropdown : moduleDropdowns) {
