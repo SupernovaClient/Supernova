@@ -4,6 +4,7 @@ import com.github.supernova.Supernova;
 import com.github.supernova.modules.Category;
 import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
+import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.value.impl.EnumValue;
 import org.lwjgl.input.Keyboard;
 
@@ -21,7 +22,7 @@ public class ClickGUI extends Module {
 	@Override
 	public void onEnable() {
 
-		if (guiModeValue.getCurrentValue() == GuiMode.DROPDOWN) {
+		if (guiModeValue.getCurrentValue() == GuiMode.DROPDOWN || guiModeValue.getCurrentValue() == GuiMode.ASTOLFO) {
 			mc.displayGuiScreen(Supernova.INSTANCE.getClickGui());
 		}
 
@@ -30,13 +31,19 @@ public class ClickGUI extends Module {
 	}
 
 
-	enum GuiMode {
-		DROPDOWN("Dropdown");
+	enum GuiMode implements ModeEnum {
+		DROPDOWN("Dropdown"),
+		ASTOLFO("Astolfo");
 
 		final String name;
 
 		GuiMode(String name) {
 			this.name = name;
+		}
+
+		@Override
+		public String getName() {
+			return name;
 		}
 	}
 }

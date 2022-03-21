@@ -1,10 +1,11 @@
 package com.github.supernova.value.impl;
 
+import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.value.Value;
 
 import java.util.Arrays;
 
-public class EnumValue<T extends Enum<T>> extends Value<T> {
+public class EnumValue<T extends Enum<T> & ModeEnum> extends Value<T> {
 
     private final T[] enumValues;
 

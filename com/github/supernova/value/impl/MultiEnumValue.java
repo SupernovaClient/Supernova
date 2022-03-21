@@ -1,12 +1,13 @@
 package com.github.supernova.value.impl;
 
+import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.value.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class MultiEnumValue<T extends Enum<T>> extends Value<ArrayList<T>> {
+public class MultiEnumValue<T extends Enum<T> & ModeEnum> extends Value<ArrayList<T>> {
 
     private final ArrayList<T> enumValues;
 
@@ -15,6 +16,20 @@ public class MultiEnumValue<T extends Enum<T>> extends Value<ArrayList<T>> {
         this.enumValues = Arrays.stream(values).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public ArrayList<String> getAllValuesString() {
+        ArrayList<String> strings = new ArrayList<>();
+        enumValues.forEach((value) -> {
+            strings.add(value.getName());
+        });
+        return strings;
+    }
+    public ArrayList<String> getEnabledValuesString() {
+        ArrayList<String> strings = new ArrayList<>();
+        currentValue.forEach((value) -> {
+            strings.add(value.getName());
+        });
+        return strings;
+    }
 
     public ArrayList<T> getAllValues() {
         return enumValues;

@@ -1,6 +1,7 @@
 package com.github.supernova.gui.guiscreen.click.impl.module.values;
 
 import com.github.supernova.gui.guiscreen.click.impl.module.ModuleDropdown;
+import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.util.render.RenderUtil;
 import com.github.supernova.value.impl.EnumValue;
 
@@ -9,9 +10,9 @@ import java.io.IOException;
 public class ModeComponent extends ValueComponent {
 
     private ModuleDropdown parent;
-    private EnumValue<?> value;
+    private EnumValue<? extends ModeEnum> value;
 
-    public ModeComponent(ModuleDropdown parent, EnumValue<?> value) {
+    public ModeComponent(ModuleDropdown parent, EnumValue<? extends ModeEnum> value) {
         this.parent = parent;
         this.value = value;
     }
@@ -22,11 +23,20 @@ public class ModeComponent extends ValueComponent {
         this.posX = posX;
         this.posY = posY;
         RenderUtil.drawRectWidth(posX,posY,getComponentWidth(),getComponentHeight(),0xFF3A3A3A);
+        mc.blockyFontObj.drawStringWithShadow(value.getValueName(),posX+5,posY+COMPONENT_HEIGHT/2f-mc.blockyFontObj.FONT_HEIGHT/2f, 0xFFDADADA);
+        int width = mc.blockyFontObj.getStringWidth(value.getValueString());
+        mc.blockyFontObj.drawStringWithShadow(value.getValueString(),posX+COMPONENT_WIDTH-width-5,posY+COMPONENT_HEIGHT/2f-mc.blockyFontObj.FONT_HEIGHT/2f, 0xFFDADADA);
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-
+        if(hovered(mouseX,mouseY)) {
+            if(mouseButton == 1) {
+                value.decrement();
+            } else if (mouseButton == 0) {
+                value.increment();
+            }
+        }
     }
 
     @Override
