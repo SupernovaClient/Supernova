@@ -34,6 +34,7 @@ import net.minecraft.util.Vec3;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @ModuleAnnotation(name = "Crop Nuker", displayName = "Crop Nuker", description = "Breaks Crops", category = Category.MACRO)
@@ -70,15 +71,15 @@ public class CropNuker extends Module {
 	}
 
 	private final EnumMoveDirection currentMoveDirection = null;
-	private ArrayList<BlockPos> blocksToBreak = new ArrayList<>();
-	private ArrayList<BlockPos> brokenBlocks = new ArrayList<>();
+	private CopyOnWriteArrayList<BlockPos> blocksToBreak = new CopyOnWriteArrayList<>();
+	private CopyOnWriteArrayList<BlockPos> brokenBlocks = new CopyOnWriteArrayList<>();
 
 	@EventHandler
 	public final Listener<EventUpdate> eventUpdate = event -> {
 		blocksToBreak = getBlocksInRange(breakRangeValue.getDouble())
 				.stream()
 				.sorted(Comparator.comparingDouble(mc.thePlayer::getDistanceSq))
-				.collect(Collectors.toCollection(ArrayList::new));
+				.collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 	};
 	private boolean runningThread = false;
 	private void runThread() {
@@ -148,12 +149,12 @@ public class CropNuker extends Module {
 
 	}
 
-	private ArrayList<BlockPos> getBlocksInRange(double range) {
+	private CopyOnWriteArrayList<BlockPos> getBlocksInRange(double range) {
 		range /= 2;
 		BlockPos playerPos = getPlayerPos();
 		BlockPos pos1 = playerPos.add(-6, -6, -6);
 		BlockPos pos2 = playerPos.add(6, 6, 6);
-		ArrayList<BlockPos> targetBlocks = new ArrayList<>();
+		CopyOnWriteArrayList<BlockPos> targetBlocks = new CopyOnWriteArrayList<>();
 		for (BlockPos pos : BlockPos.getAllInBox(pos1, pos2)) {
 			if(brokenBlocks.contains(pos)) continue;
 			IBlockState blockState = mc.theWorld.getBlockState(pos);
@@ -175,7 +176,7 @@ public class CropNuker extends Module {
 			}
 		}
 		return targetBlocks.stream().filter((block) -> mc.thePlayer.getDistance(block.getX(),block.getY(),block.getZ()) <= breakRangeValue.getCurrentValue())
-				.collect(Collectors.toCollection(ArrayList::new));
+				.collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 	}
 
 	private BlockPos getPlayerPos() {
