@@ -1,12 +1,20 @@
 package com.github.supernova.util.game;
 
 import com.github.supernova.Supernova;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SkyblockUtil {
     public static String getSkyblockID(ItemStack item) {
@@ -30,6 +38,23 @@ public class SkyblockUtil {
             }
         }
 
-        return 0;
+        return 100;
+    }
+
+    public static boolean isOnIsland() {
+        Scoreboard scoreboard = Minecraft.getMinecraft().theWorld.getScoreboard();
+        ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
+        if(objective != null) {
+            Scoreboard sb = objective.getScoreboard();
+            for(Score score : sb.getSortedScores(objective)) {
+                ScorePlayerTeam scoreplayerteam = scoreboard.getPlayersTeam(score.getPlayerName());
+                if(scoreplayerteam == null) continue;
+                ChatComponentText text = new ChatComponentText(ScorePlayerTeam
+                        .formatPlayerName(scoreplayerteam, score.getPlayerName())
+                        .replaceAll(score.getPlayerName(),""));
+                System.out.println(text.getFormattedText());
+            }
+        }
+        return true;
     }
 }

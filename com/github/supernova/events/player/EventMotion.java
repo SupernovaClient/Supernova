@@ -44,4 +44,8 @@ public class EventMotion implements Event {
 	public void setPre(boolean pre) {
 		this.pre = pre;
 	}
+
+	public boolean pre() {
+		return pre;
+	}
 }

@@ -2,6 +2,7 @@ package com.github.supernova.modules.macro;
 
 import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
+import com.github.supernova.Supernova;
 import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender2D;
@@ -26,10 +27,7 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,8 +38,9 @@ import java.util.stream.Collectors;
 @ModuleAnnotation(name = "Crop Nuker", displayName = "Crop Nuker", description = "Breaks Crops", category = Category.MACRO)
 public class CropNuker extends Module {
 
-	public BooleanValue autoMoveValue = new BooleanValue("Auto Move", false);
+	public BooleanValue autoMoveValue = new BooleanValue("Auto Move", true);
 	public BooleanValue toolCheckValue = new BooleanValue("Tool Check", true);
+	public BooleanValue rotationValue = new BooleanValue("Rotate", true);
 	public MultiEnumValue<EnumCropTypes> nukerBlockTargetValue = new MultiEnumValue<>("Crops", EnumCropTypes.values(),
 			EnumCropTypes.NETHERWART, EnumCropTypes.WHEAT, EnumCropTypes.POTATO, EnumCropTypes.COCOA,
 			EnumCropTypes.CARROT, EnumCropTypes.MELON, EnumCropTypes.PUMPKIN);
@@ -53,7 +52,7 @@ public class CropNuker extends Module {
 
 	public CropNuker() {
 		super();
-		setValues(breakBPSValue, breakRangeValue, nukerBlockTargetValue, autoMoveValue, toolCheckValue);
+		setValues(breakBPSValue, breakRangeValue, nukerBlockTargetValue, autoMoveValue, toolCheckValue, rotationValue);
 	}
 
 	@Override
@@ -70,17 +69,47 @@ public class CropNuker extends Module {
 		super.onDisable();
 	}
 
-	private final EnumMoveDirection currentMoveDirection = null;
+	private EnumMoveDirection currentMoveDirection = null;
 	private CopyOnWriteArrayList<BlockPos> blocksToBreak = new CopyOnWriteArrayList<>();
 	private CopyOnWriteArrayList<BlockPos> brokenBlocks = new CopyOnWriteArrayList<>();
 
+	private int disconnectedTicks = 0;
+	private boolean isDisconnected = false;
+
 	@EventHandler
 	public final Listener<EventUpdate> eventUpdate = event -> {
-		blocksToBreak = getBlocksInRange(breakRangeValue.getDouble())
+		SkyblockUtil.isOnIsland();
+		if(isDisconnected) {
+			disconnectedTicks++;
+			rejoin(disconnectedTicks);
+		} else {
+			disconnectedTicks = 0;
+		}
+		blocksToBreak = getBlocksInRange()
 				.stream()
 				.sorted(Comparator.comparingDouble(mc.thePlayer::getDistanceSq))
 				.collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+		if(rotationValue.getCurrentValue()) {
+			float newYaw = getMovementYaw();
+			float currentYaw = mc.thePlayer.rotationYaw % 360;
+			float difference;
+			if (newYaw > currentYaw) {
+				difference = MathHelper.wrapAngleTo180_float(newYaw - currentYaw);
+			} else {
+				difference = MathHelper.wrapAngleTo180_float(currentYaw - newYaw);
+			}
+			if (newYaw < currentYaw) {
+				mc.thePlayer.rotationYaw -= difference / 3.8;
+			} else {
+				mc.thePlayer.rotationYaw += difference / 3.8;
+			}
+		}
 	};
+
+	private void rejoin(int currentTicks) {
+
+	}
+
 	private boolean runningThread = false;
 	private void runThread() {
 		if(runningThread) return;
@@ -129,9 +158,19 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventMotion> eventMotion = event -> {
+		if(!event.pre()) return;
 		if (!autoMoveValue.getCurrentValue()) return;
-
-		updateDirection();
+		if(currentMoveDirection == null || mc.thePlayer.isCollidedHorizontally) {
+			mc.thePlayer.setPosition(
+					Math.floor(mc.thePlayer.posX)+0.5,
+					mc.thePlayer.posY,
+					Math.floor(mc.thePlayer.posZ)+0.5);
+			updateDirection();
+		} else {
+			double movementSpeed = getMovementSpeed();
+			event.setX(currentMoveDirection.x * movementSpeed);
+			event.setZ(currentMoveDirection.z * movementSpeed);
+		}
 	};
 
 	private double getMovementSpeed() {
@@ -146,11 +185,69 @@ public class CropNuker extends Module {
 	}
 
 	private void updateDirection() {
-
+		ArrayList<EnumMoveDirection> openDirections = getOpenDirections();
+		if(openDirections.size() == 0) return;
+		currentMoveDirection = openDirections.get(0);
 	}
 
-	private CopyOnWriteArrayList<BlockPos> getBlocksInRange(double range) {
-		range /= 2;
+	private ArrayList<EnumMoveDirection> getOpenDirections() {
+		ArrayList<EnumMoveDirection> openDir = new ArrayList<>();
+		for(EnumMoveDirection dir : EnumMoveDirection.values()) {
+			if(currentMoveDirection != null) {
+				if(dir == currentMoveDirection) continue;
+			}
+			if(isOpenDir(dir)) {
+				openDir.add(dir);
+			}
+		}
+		openDir.remove(getOpposite(currentMoveDirection));
+		if(openDir.size() == 0) {
+			openDir.add(getOpposite(currentMoveDirection));
+		}
+		return openDir;
+	}
+
+	private boolean isOpenDir(EnumMoveDirection direction) {
+		BlockPos feetBlock = getPlayerPos().add(direction.x,direction.y,direction.z);
+		BlockPos headBlock = getPlayerPos().add(direction.x,direction.y+1,direction.z);
+		IBlockState feetBlockState = mc.theWorld.getBlockState(feetBlock);
+		IBlockState headBlockState = mc.theWorld.getBlockState(headBlock);
+		Block feet = feetBlockState.getBlock();
+		Block head = headBlockState.getBlock();
+			return (head instanceof BlockBush || head instanceof BlockAir) &&
+					(feet instanceof BlockBush || feet instanceof BlockAir);
+	}
+
+	private float getMovementYaw() {
+		if (currentMoveDirection == null) return mc.thePlayer.rotationYaw;
+		float a = 0, b = 0;
+		if (currentMoveDirection.z == -1) {
+			b = 180;
+		}
+		if (currentMoveDirection.x == 1) {
+			a = 270;
+		}
+		if (currentMoveDirection.x == -1) {
+			a = 90;
+		}
+		return a + b;
+	}
+
+	private EnumMoveDirection getOpposite(EnumMoveDirection direction) {
+		EnumMoveDirection returnDirection = null;
+		if (direction == EnumMoveDirection.NORTH) {
+			returnDirection = EnumMoveDirection.SOUTH;
+		} else if (direction == EnumMoveDirection.WEST) {
+			returnDirection = EnumMoveDirection.EAST;
+		} else if (direction == EnumMoveDirection.SOUTH) {
+			returnDirection = EnumMoveDirection.NORTH;
+		} else if (direction == EnumMoveDirection.EAST) {
+			returnDirection = EnumMoveDirection.WEST;
+		}
+		return returnDirection;
+	}
+
+	private CopyOnWriteArrayList<BlockPos> getBlocksInRange() {
 		BlockPos playerPos = getPlayerPos();
 		BlockPos pos1 = playerPos.add(-6, -6, -6);
 		BlockPos pos2 = playerPos.add(6, 6, 6);
