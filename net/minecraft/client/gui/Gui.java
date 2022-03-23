@@ -154,6 +154,10 @@ public class Gui
     {
         fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
     }
+    public void drawCenteredString(FontRenderer fontRendererIn, String text, float x, float y, int color)
+    {
+        fontRendererIn.drawStringWithShadow(text, (x - fontRendererIn.getStringWidth(text) / 2f), y, color);
+    }
 
     /**
      * Renders the specified text to the screen. Args : renderer, string, x, y, color
@@ -161,6 +165,10 @@ public class Gui
     public void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
         fontRendererIn.drawStringWithShadow(text, (float)x, (float)y, color);
+    }
+    public void drawString(FontRenderer fontRendererIn, String text, float x, float y, int color)
+    {
+        fontRendererIn.drawStringWithShadow(text, x, y, color);
     }
 
     /**

@@ -1,5 +1,6 @@
 package net.minecraft.client;
 
+import com.github.supernova.gui.GuiLogin;
 import com.google.common.collect.*;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -502,13 +503,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 		this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
 		this.checkGLError("Post startup");
 		this.ingameGUI = new GuiIngame(this);
-		Supernova.INSTANCE.startup();
-
-		if (this.serverName != null) {
-			this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
-		} else {
-			this.displayGuiScreen(new GuiMainMenu());
-		}
+		this.displayGuiScreen(new GuiLogin());
 
 		this.renderEngine.deleteTexture(this.mojangLogo);
 		this.mojangLogo = null;

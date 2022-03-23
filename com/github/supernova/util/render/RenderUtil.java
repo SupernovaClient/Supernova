@@ -124,4 +124,17 @@ public class RenderUtil {
         GlStateManager.disableTexture2D();
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
+
+    public static boolean isHovered(int mouseX, int mouseY, float x, float y, float x2, float y2) {
+        if (mouseX >= x && mouseX <= x2) {
+            return mouseY >= y && mouseY <= y2;
+        }
+        return false;
+    }
+    public static boolean isHoveredWidth(int mouseX, int mouseY, float x, float y, float width, float height) {
+        if (mouseX >= x && mouseX <= x+width) {
+            return mouseY >= y && mouseY <= y + height;
+        }
+        return false;
+    }
 }

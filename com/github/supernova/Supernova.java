@@ -34,6 +34,9 @@ public enum Supernova {
 	private ArrayList<Alt> altArrayList = new ArrayList<>();
 	private JsonParser parser = new JsonParser();
 
+	private String username = "";
+	private int uid = -1;
+
 	public GuiClickGui getClickGui() {
 		return clickGui;
 	}
@@ -52,6 +55,20 @@ public enum Supernova {
 
 	public void saveAltList(File file) {
 
+	}
+	public boolean isAuthed() {
+		return true;
+		//return !username.equals("") && uid != -1;
+	}
+	public void setPlayerInfo(String username, int uid) {
+		this.username = username;
+		this.uid = uid;
+	}
+	public String getUsername() {
+		return this.username;
+	}
+	public int getUID() {
+		return this.uid;
 	}
 
 	public void updateAltList(File file) {
@@ -108,4 +125,5 @@ public enum Supernova {
 	public EventBus getEventBus() {
 		return eventBus;
 	}
+
 }

@@ -13,6 +13,8 @@ import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.Render3DUtil;
 import com.github.supernova.util.render.RenderUtil;
 import com.google.gson.JsonParser;
+import net.minecraft.block.BlockSlab;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,6 +23,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 
@@ -50,6 +53,18 @@ public class DebugESP extends Module {
 
     @EventHandler
     public final Listener<EventRender3D> eventRender3D = event -> {
+        BlockPos pos1 = new BlockPos(mc.thePlayer.posX-3, mc.thePlayer.posY-10, mc.thePlayer.posZ-3);
+        BlockPos pos2 = new BlockPos(mc.thePlayer.posX+3, mc.thePlayer.posY+10, mc.thePlayer.posZ+3);
+        for(BlockPos blockPos : BlockPos.getAllInBox(pos1,pos2)) {
+            IBlockState blockState = mc.theWorld.getBlockState(blockPos);
+            if(!(blockState.getBlock() instanceof BlockSlab)) continue;
+            Vec3 offset = Render3DUtil.getRenderOffset(event.getPartialTicks());
+            Render3DUtil.drawWireAxisBoundingBox(
+                    blockState.getBlock().getSelectedBoundingBox(mc.theWorld,blockPos)
+                            .offset(-offset.xCoord,-offset.yCoord-6,-offset.zCoord)
+                    ,new Color(0xFFAAFFBB), 255
+                    );
+        }
         for(Entity entity : mc.theWorld.getLoadedEntityList()) {
             if(entity == mc.thePlayer) continue;
             if(entity.getClass().getName().equals(EntityArmorStand.class.getName())) continue;
