@@ -2,13 +2,16 @@ package com.github.supernova.modules.render;
 
 import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
+import com.github.supernova.Supernova;
 import com.github.supernova.events.network.EventReceivePacket;
+import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender3D;
 import com.github.supernova.modules.Category;
 import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
 import com.github.supernova.util.game.SkyblockUtil;
+import com.github.supernova.util.player.MovementUtil;
 import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.Render3DUtil;
 import com.github.supernova.util.render.RenderUtil;
@@ -38,6 +41,12 @@ public class DebugESP extends Module {
     public void onEnable() {
         super.onEnable();
     }
+
+    @EventHandler
+    public final Listener<EventMotion> eventMotion = event -> {
+        if(!event.pre()) return;
+        Supernova.INSTANCE.chat(event.getX()+"");
+    };
 
     @EventHandler
     public final Listener<EventUpdate> eventUpdate = event -> {

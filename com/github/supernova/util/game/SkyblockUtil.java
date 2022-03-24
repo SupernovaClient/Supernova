@@ -49,12 +49,12 @@ public class SkyblockUtil {
             for(Score score : sb.getSortedScores(objective)) {
                 ScorePlayerTeam scoreplayerteam = scoreboard.getPlayersTeam(score.getPlayerName());
                 if(scoreplayerteam == null) continue;
-                ChatComponentText text = new ChatComponentText(ScorePlayerTeam
-                        .formatPlayerName(scoreplayerteam, score.getPlayerName())
-                        .replaceAll(score.getPlayerName(),""));
-                System.out.println(text.getFormattedText());
+                if(ScorePlayerTeam.formatPlayerName(scoreplayerteam, score.getPlayerName())
+                        .replaceAll(score.getPlayerName(),"").contains("Your Isla")) {
+                    return true;
+                }
             }
         }
-        return true;
+        return false;
     }
 }

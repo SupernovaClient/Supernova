@@ -14,6 +14,7 @@ import com.github.supernova.util.client.ModeEnum;
 import com.github.supernova.util.client.TimerUtil;
 import com.github.supernova.util.game.SkyblockUtil;
 import com.github.supernova.util.math.MathUtil;
+import com.github.supernova.util.player.MovementUtil;
 import com.github.supernova.util.render.ColourUtil;
 import com.github.supernova.util.render.Render3DUtil;
 import com.github.supernova.value.impl.BooleanValue;
@@ -22,6 +23,7 @@ import com.github.supernova.value.impl.NumberValue;
 import net.minecraft.block.*;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
@@ -78,7 +80,11 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventUpdate> eventUpdate = event -> {
-		SkyblockUtil.isOnIsland();
+		if(!SkyblockUtil.isOnIsland()) {
+			isDisconnected = true;
+		} else {
+			isDisconnected = false;
+		}
 		if(isDisconnected) {
 			disconnectedTicks++;
 			rejoin(disconnectedTicks);
@@ -118,16 +124,18 @@ public class CropNuker extends Module {
 			@Override
 			public void run() {
 				while (!this.isInterrupted() && isEnabled()) {
-					if (blocksToBreak.size() > 0) {
-						if (breakTimer.elapsed(MathUtil.bpsToMillis(breakBPSValue.getDouble()), true)) {
-							BlockPos blockPos = getNextBlock();
-							mc.getNetHandler().addToSendQueueSilent(new C07PacketPlayerDigging(
-									C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-									blockPos,
-									EnumFacing.DOWN));
-							brokenBlocks.add(blockPos);
-							blocksToBreak.remove(blockPos);
-							lastClearTimer.reset();
+					if(!isDisconnected) {
+						if (blocksToBreak.size() > 0) {
+							if (breakTimer.elapsed(MathUtil.bpsToMillis(breakBPSValue.getDouble()), true)) {
+								BlockPos blockPos = getNextBlock();
+								mc.getNetHandler().addToSendQueueSilent(new C07PacketPlayerDigging(
+										C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+										blockPos,
+										EnumFacing.DOWN));
+								brokenBlocks.add(blockPos);
+								blocksToBreak.remove(blockPos);
+								lastClearTimer.reset();
+							}
 						}
 					}
 					if (lastClearTimer.elapsed(150, true)) {
@@ -141,6 +149,9 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventRender2D> eventRender2D = event -> {
+		if(isDisconnected) {
+			Gui.drawRect(0,0,mc.displayWidth,mc.displayHeight,0x44FF5050);
+		}
 	};
 
 	@EventHandler
@@ -159,6 +170,7 @@ public class CropNuker extends Module {
 	@EventHandler
 	public final Listener<EventMotion> eventMotion = event -> {
 		if(!event.pre()) return;
+		//if(isDisconnected) return;
 		if (!autoMoveValue.getCurrentValue()) return;
 		if(currentMoveDirection == null || mc.thePlayer.isCollidedHorizontally) {
 			mc.thePlayer.setPosition(
@@ -168,8 +180,27 @@ public class CropNuker extends Module {
 			updateDirection();
 		} else {
 			double movementSpeed = getMovementSpeed();
-			event.setX(currentMoveDirection.x * movementSpeed);
-			event.setZ(currentMoveDirection.z * movementSpeed);
+			double motX = currentMoveDirection.x * movementSpeed;
+			double motZ = currentMoveDirection.z * movementSpeed;
+			if(mc.thePlayer.isInWater()) {
+				motX *= MovementUtil.SWIM_MULTI;
+				motZ *= MovementUtil.SWIM_MULTI;
+			}
+			BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
+			if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockSoulSand) {
+				motX *= MovementUtil.SOUL_MULTI;
+				motZ *= MovementUtil.SOUL_MULTI;
+			}
+			if(mc.thePlayer.isSneaking()) {
+				motX *= MovementUtil.SNEAK_MULTI;
+				motZ *= MovementUtil.SNEAK_MULTI;
+			}
+			if(!mc.thePlayer.onGround) {
+				motX *= MovementUtil.AIRBORNE_MULTI;
+				motZ *= MovementUtil.AIRBORNE_MULTI;
+			}
+			event.setX(motX);
+			event.setZ(motZ);
 		}
 	};
 

@@ -91,9 +91,8 @@ public enum Supernova {
 		ModuleManager.INSTANCE.init();
 		clickGui = new GuiClickGui();
 		eventBus.register(this);
-		//new Alt("olen.omenaxdxd@gmail.com","volvov700").login();
-		//new Alt("joeybouwmans@gmail.com","Joejoe20081610pepper").login();
-		microsoftLogin();
+		new Alt("jack1987b@hotmail.com","concerto24").login();
+		//microsoftLogin();
 		//new Alt("mataishangthorn@gmail.com", "Drakengard2").login();
 	}
 

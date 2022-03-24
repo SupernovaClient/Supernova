@@ -584,12 +584,15 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
             ArrayList<Alt> altList = Supernova.INSTANCE.getAltList();
             if(currentScreen == altListScreen.ALTS) {
                 drawCenteredString(mc.blockyFontObj,"Alt Manager", (int) (altListX+altListWidth/2f), (int) altListY+10, 0xFFDADADA);
+                /*
                 RenderUtil.drawRectWidth(altListX+10, altListY+altListHeight-30
                 ,60,20, 0xFF444444);
                 RenderUtil.drawRectWidth(altListX+80, altListY+altListHeight-30
                         ,60,20, 0xFF444444);
                 RenderUtil.drawRectWidth(altListX+150, altListY+altListHeight-30
                         ,60,20, 0xFF444444);
+                        
+                 */
             } else if (currentScreen == altListScreen.LOGIN) {
                 drawCenteredString(mc.blockyFontObj,"Add Alt", (int) (altListX+altListWidth/2f), (int) altListY+10, 0xFFDADADA);
 
