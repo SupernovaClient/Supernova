@@ -24,6 +24,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
@@ -95,7 +96,7 @@ public class CropNuker extends Module {
 				.stream()
 				.sorted(Comparator.comparingDouble(mc.thePlayer::getDistanceSq))
 				.collect(Collectors.toCollection(CopyOnWriteArrayList::new));
-		if(rotationValue.getCurrentValue()) {
+		if(rotationValue.getCurrentValue() && !isDisconnected && autoMoveValue.getCurrentValue()) {
 			float newYaw = getMovementYaw();
 			float currentYaw = mc.thePlayer.rotationYaw % 360;
 			float difference;
@@ -111,9 +112,17 @@ public class CropNuker extends Module {
 			}
 		}
 	};
-
 	private void rejoin(int currentTicks) {
-
+		if(SkyblockUtil.isOnIsland()) return;
+		if(currentTicks == 80) {
+			mc.thePlayer.sendChatMessage("/l");
+		} else if (currentTicks == 160) {
+			mc.thePlayer.sendChatMessage("/play skyblock");
+		} else if (currentTicks == 240) {
+			mc.thePlayer.sendChatMessage("/is");
+		} else if (currentTicks >= 600) {
+			currentTicks = 0;
+		}
 	}
 
 	private boolean runningThread = false;
@@ -170,7 +179,7 @@ public class CropNuker extends Module {
 	@EventHandler
 	public final Listener<EventMotion> eventMotion = event -> {
 		if(!event.pre()) return;
-		//if(isDisconnected) return;
+		if(isDisconnected) return;
 		if (!autoMoveValue.getCurrentValue()) return;
 		if(currentMoveDirection == null || mc.thePlayer.isCollidedHorizontally) {
 			mc.thePlayer.setPosition(
@@ -183,8 +192,8 @@ public class CropNuker extends Module {
 			double motX = currentMoveDirection.x * movementSpeed;
 			double motZ = currentMoveDirection.z * movementSpeed;
 			if(mc.thePlayer.isInWater()) {
-				motX *= MovementUtil.SWIM_MULTI;
-				motZ *= MovementUtil.SWIM_MULTI;
+				mc.thePlayer.sendChatMessage("/hub");
+				return;
 			}
 			BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
 			if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockSoulSand) {
@@ -206,7 +215,7 @@ public class CropNuker extends Module {
 
 	private double getMovementSpeed() {
 		double baseSpeed = 0.22f;
-		return baseSpeed * (SkyblockUtil.getSpeedPercentage()/100f);
+		return baseSpeed * SkyblockUtil.getSpeedPercentage()/100f;
 	}
 
 	private BlockPos getNextBlock() {
@@ -224,15 +233,14 @@ public class CropNuker extends Module {
 	private ArrayList<EnumMoveDirection> getOpenDirections() {
 		ArrayList<EnumMoveDirection> openDir = new ArrayList<>();
 		for(EnumMoveDirection dir : EnumMoveDirection.values()) {
-			if(currentMoveDirection != null) {
-				if(dir == currentMoveDirection) continue;
-			}
-			if(isOpenDir(dir)) {
+			if(dir == currentMoveDirection) continue;
+			if (isOpenDir(dir)) {
 				openDir.add(dir);
 			}
 		}
-		openDir.remove(getOpposite(currentMoveDirection));
-		if(openDir.size() == 0) {
+		if(openDir.contains(getOpposite(currentMoveDirection)) && openDir.size() > 1) {
+			openDir.remove(getOpposite(currentMoveDirection));
+		} else if(openDir.isEmpty() && isOpenDir(getOpposite(currentMoveDirection))) {
 			openDir.add(getOpposite(currentMoveDirection));
 		}
 		return openDir;
@@ -245,8 +253,9 @@ public class CropNuker extends Module {
 		IBlockState headBlockState = mc.theWorld.getBlockState(headBlock);
 		Block feet = feetBlockState.getBlock();
 		Block head = headBlockState.getBlock();
-			return (head instanceof BlockBush || head instanceof BlockAir) &&
-					(feet instanceof BlockBush || feet instanceof BlockAir);
+		System.out.println(feet+"  "+head);
+		return (head instanceof BlockBush || head instanceof BlockAir) &&
+				(feet instanceof BlockBush || feet instanceof BlockAir);
 	}
 
 	private float getMovementYaw() {
@@ -308,7 +317,7 @@ public class CropNuker extends Module {
 	}
 
 	private BlockPos getPlayerPos() {
-		return new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+		return new BlockPos(mc.thePlayer.posX, Math.ceil(mc.thePlayer.posY), mc.thePlayer.posZ);
 	}
 
 	private boolean isType(Block block, EnumCropTypes type) {

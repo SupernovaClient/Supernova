@@ -43,7 +43,7 @@ public class MultiModeComponent extends ValueComponent {
                 boolean enabled = value.isEnabled(index);
                 HUD hudModule = (HUD) ModuleManager.INSTANCE.get(HUD.class);
                 int modeColour = enabled ? hudModule.hudColourValue.getCurrentValue(index*40).getRGB() : 0xffdadada;
-                mc.blockyFontObj.drawStringWithShadow(mode, this.posX + COMPONENT_WIDTH - 5 - width, posY + 1 + (COMPONENT_HEIGHT / 2f - mc.blockyFontObj.FONT_HEIGHT / 2f), modeColour);
+                mc.blockyFontObj.drawStringWithShadow(mode, this.posX + COMPONENT_WIDTH/2-width/2f, posY + 1 + (COMPONENT_HEIGHT / 2f - mc.blockyFontObj.FONT_HEIGHT / 2f), modeColour);
                 posY += COMPONENT_HEIGHT;
                 index++;
             }
