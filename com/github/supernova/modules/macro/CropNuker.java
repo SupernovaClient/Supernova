@@ -60,6 +60,10 @@ public class CropNuker extends Module {
 
 	@Override
 	public void onEnable() {
+		mc.thePlayer.setPosition(
+				Math.floor(mc.thePlayer.posX)+0.5,
+				mc.thePlayer.posY,
+				Math.floor(mc.thePlayer.posZ)+0.5);
 		breakTimer.reset();
 		if(!runningThread) {
 			runThread();
@@ -79,18 +83,25 @@ public class CropNuker extends Module {
 	private int disconnectedTicks = 0;
 	private boolean isDisconnected = false;
 
+	private boolean debugMode = false;
+
 	@EventHandler
 	public final Listener<EventUpdate> eventUpdate = event -> {
-		if(!SkyblockUtil.isOnIsland()) {
-			isDisconnected = true;
+		debugMode = false;
+		if(!debugMode) {
+			if (!SkyblockUtil.isOnIsland()) {
+				isDisconnected = true;
+			} else {
+				isDisconnected = false;
+			}
+			if (isDisconnected) {
+				disconnectedTicks++;
+				rejoin(disconnectedTicks);
+			} else {
+				disconnectedTicks = 0;
+			}
 		} else {
 			isDisconnected = false;
-		}
-		if(isDisconnected) {
-			disconnectedTicks++;
-			rejoin(disconnectedTicks);
-		} else {
-			disconnectedTicks = 0;
 		}
 		blocksToBreak = getBlocksInRange()
 				.stream()
@@ -111,6 +122,14 @@ public class CropNuker extends Module {
 				mc.thePlayer.rotationYaw += difference / 3.8;
 			}
 		}
+
+		if(!autoMoveValue.getCurrentValue()) return;
+
+		BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
+		if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockEndPortalFrame && mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically && !isDisconnected) {
+			mc.thePlayer.jump();
+		}
+
 	};
 	private void rejoin(int currentTicks) {
 		if(SkyblockUtil.isOnIsland()) return;
@@ -165,6 +184,7 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventRender3D> eventRender3D = event -> {
+		/*
 		if (blocksToBreak.size() > 0) {
 			BlockPos nextBlock = getNextBlock();
 			if (nextBlock == null) return;
@@ -174,6 +194,8 @@ public class CropNuker extends Module {
 			bbox = bbox.offset(-offset.xCoord, -offset.yCoord, -offset.zCoord);
 			Render3DUtil.drawWireAxisBoundingBox(bbox, ColourUtil.astolfoColour(0, 10000), 255);
 		}
+
+		 */
 	};
 
 	@EventHandler
@@ -204,7 +226,7 @@ public class CropNuker extends Module {
 				motX *= MovementUtil.SNEAK_MULTI;
 				motZ *= MovementUtil.SNEAK_MULTI;
 			}
-			if(!mc.thePlayer.onGround) {
+			if(!mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying) {
 				motX *= MovementUtil.AIRBORNE_MULTI;
 				motZ *= MovementUtil.AIRBORNE_MULTI;
 			}
@@ -253,7 +275,6 @@ public class CropNuker extends Module {
 		IBlockState headBlockState = mc.theWorld.getBlockState(headBlock);
 		Block feet = feetBlockState.getBlock();
 		Block head = headBlockState.getBlock();
-		System.out.println(feet+"  "+head);
 		return (head instanceof BlockBush || head instanceof BlockAir) &&
 				(feet instanceof BlockBush || feet instanceof BlockAir);
 	}
@@ -305,6 +326,10 @@ public class CropNuker extends Module {
 					}
 					if(type == EnumCropTypes.MELON || type == EnumCropTypes.PUMPKIN) {
 						targetBlocks.add(pos);
+					} else if (type == EnumCropTypes.CACTUS || type == EnumCropTypes.CANE) {
+						if(pos.getY() == (playerPos.getY()+1)) {
+							targetBlocks.add(pos);
+						}
 					} else if (getMaxBlockAge(blockState) == getBlockAge(blockState)) {
 						targetBlocks.add(pos);
 					}
@@ -357,8 +382,10 @@ public class CropNuker extends Module {
 
 	enum EnumCropTypes implements ModeEnum {
 		NETHERWART(BlockNetherWart.class, "Nether Wart", ItemHoe.class),
+		CANE(BlockReed.class , "Sugar Cane", ItemHoe.class),
 		COCOA(BlockCocoa.class, "Cocoa Bean", ItemAxe.class),
 		PUMPKIN(BlockPumpkin.class, "Pumpkin", ItemAxe.class),
+		CACTUS(BlockCactus.class , "Cactus", ItemHoe.class),
 		CARROT(BlockCarrot.class, "Carrot", ItemHoe.class),
 		POTATO(BlockPotato.class, "Potato", ItemHoe.class),
 		WHEAT(BlockCrops.class, "Wheat", ItemHoe.class),

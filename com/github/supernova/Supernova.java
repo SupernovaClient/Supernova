@@ -93,6 +93,7 @@ public enum Supernova {
 		eventBus.register(this);
 		//new Alt("jack1987b@hotmail.com","concerto24").login();
 		//new Alt("kangda_nim@naver.com","Kang0719!!").login();
+		//new Alt("0203zz@naver.com","Zvx74107410@").login();
 		microsoftLogin();
 		//new Alt("mataishangthorn@gmail.com", "Drakengard2").login();
 	}
