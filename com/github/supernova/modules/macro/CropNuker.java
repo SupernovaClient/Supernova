@@ -3,6 +3,7 @@ package com.github.supernova.modules.macro;
 import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
 import com.github.supernova.Supernova;
+import com.github.supernova.events.network.EventReceivePacket;
 import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender2D;
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.util.*;
 
 import java.util.ArrayList;
@@ -86,8 +88,14 @@ public class CropNuker extends Module {
 	private boolean debugMode = false;
 
 	@EventHandler
+	public final Listener<EventReceivePacket> eventReceivePacket = event -> {
+		if (event.getPacket() instanceof S08PacketPlayerPosLook) {
+			currentMoveDirection = null;
+		}
+	};
+
+	@EventHandler
 	public final Listener<EventUpdate> eventUpdate = event -> {
-		debugMode = false;
 		if(!debugMode) {
 			if (!SkyblockUtil.isOnIsland()) {
 				isDisconnected = true;
@@ -166,7 +174,7 @@ public class CropNuker extends Module {
 							}
 						}
 					}
-					if (lastClearTimer.elapsed(150, true)) {
+					if (lastClearTimer.elapsed(250, true) || brokenBlocks.size() >= 75) {
 						brokenBlocks.clear();
 					}
 				}
@@ -184,7 +192,6 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventRender3D> eventRender3D = event -> {
-		/*
 		if (blocksToBreak.size() > 0) {
 			BlockPos nextBlock = getNextBlock();
 			if (nextBlock == null) return;
@@ -194,8 +201,6 @@ public class CropNuker extends Module {
 			bbox = bbox.offset(-offset.xCoord, -offset.yCoord, -offset.zCoord);
 			Render3DUtil.drawWireAxisBoundingBox(bbox, ColourUtil.astolfoColour(0, 10000), 255);
 		}
-
-		 */
 	};
 
 	@EventHandler
