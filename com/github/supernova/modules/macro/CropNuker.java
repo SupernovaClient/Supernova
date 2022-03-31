@@ -4,6 +4,7 @@ import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
 import com.github.supernova.Supernova;
 import com.github.supernova.events.network.EventReceivePacket;
+import com.github.supernova.events.network.EventSendPacket;
 import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender2D;
@@ -67,6 +68,7 @@ public class CropNuker extends Module {
 				mc.thePlayer.posY,
 				Math.floor(mc.thePlayer.posZ)+0.5);
 		breakTimer.reset();
+		teleportTimer.reset();
 		if(!runningThread) {
 			runThread();
 		}
@@ -84,13 +86,18 @@ public class CropNuker extends Module {
 
 	private int disconnectedTicks = 0;
 	private boolean isDisconnected = false;
+	private TimerUtil teleportTimer = new TimerUtil();
+	private boolean setHome = true;
 
 	private boolean debugMode = false;
 
 	@EventHandler
 	public final Listener<EventReceivePacket> eventReceivePacket = event -> {
 		if (event.getPacket() instanceof S08PacketPlayerPosLook) {
+			teleportTimer.reset();
 			currentMoveDirection = null;
+			setHome = false;
+			Supernova.INSTANCE.chat("Teleport");
 		}
 	};
 
@@ -132,10 +139,16 @@ public class CropNuker extends Module {
 		}
 
 		if(!autoMoveValue.getCurrentValue()) return;
+		if(teleportTimer.elapsed(700) && !setHome) {
+			setHome = true;
+			mc.thePlayer.sendChatMessage("/sethome");
+		}
 
 		BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
 		if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockEndPortalFrame && mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically && !isDisconnected) {
-			mc.thePlayer.jump();
+			if(teleportTimer.elapsed(1500)) {
+				mc.thePlayer.jump();
+			}
 		}
 
 	};
@@ -222,6 +235,7 @@ public class CropNuker extends Module {
 				mc.thePlayer.sendChatMessage("/hub");
 				return;
 			}
+			if(!teleportTimer.elapsed(1000)) return;
 			BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
 			if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockSoulSand) {
 				motX *= MovementUtil.SOUL_MULTI;

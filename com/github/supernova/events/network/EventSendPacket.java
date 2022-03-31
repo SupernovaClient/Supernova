@@ -8,6 +8,10 @@ public class EventSendPacket implements Event {
 	private Packet<?> packet;
 	public boolean cancelled;
 
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
 	public EventSendPacket(Packet<?> packet) {
 		this.packet = packet;
 	}

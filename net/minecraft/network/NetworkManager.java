@@ -156,7 +156,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
             {
                 EventReceivePacket event = new EventReceivePacket(packet);
                 Supernova.INSTANCE.getEventBus().call(event);
-                if(event.isCancelled) return;
+                if(event.cancelled) return;
                 packet.processPacket(this.packetListener);
             }
             catch (ThreadQuickExitException var4)

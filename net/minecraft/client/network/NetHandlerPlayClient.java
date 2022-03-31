@@ -1,5 +1,6 @@
 package net.minecraft.client.network;
 
+import com.github.supernova.events.network.EventSendPacket;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -815,9 +816,9 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
     public void addToSendQueue(Packet packet)
     {
-        EventReceivePacket event = new EventReceivePacket(packet);
+        EventSendPacket event = new EventSendPacket(packet);
         Supernova.INSTANCE.getEventBus().call(event);
-        if(event.isCancelled) return;
+        if(event.cancelled) return;
         this.netManager.sendPacket(packet);
     }
     public void addToSendQueueSilent(Packet packet)

@@ -7,14 +7,14 @@ public class EventReceivePacket implements Event {
 
 	private Packet<?> packet;
 
-	public boolean isCancelled;
+	public boolean cancelled;
 
 	public EventReceivePacket(Packet<?> packet) {
 		this.packet = packet;
 	}
 
 	public void setCancelled(boolean cancelled) {
-		isCancelled = cancelled;
+		cancelled = cancelled;
 	}
 
 	public Packet<?> getPacket() {
