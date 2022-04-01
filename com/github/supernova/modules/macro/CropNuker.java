@@ -93,11 +93,10 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventReceivePacket> eventReceivePacket = event -> {
-		if (event.getPacket() instanceof S08PacketPlayerPosLook) {
+		if (event.getPacket() instanceof S08PacketPlayerPosLook && !isDisconnected) {
 			teleportTimer.reset();
 			currentMoveDirection = null;
 			setHome = false;
-			Supernova.INSTANCE.chat("Teleport");
 		}
 	};
 
@@ -138,13 +137,13 @@ public class CropNuker extends Module {
 			}
 		}
 
+		BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
 		if(!autoMoveValue.getCurrentValue()) return;
-		if(teleportTimer.elapsed(700) && !setHome) {
+		if(teleportTimer.elapsed(700) && !setHome && mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockEndPortalFrame) {
 			setHome = true;
 			mc.thePlayer.sendChatMessage("/sethome");
 		}
 
-		BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY-0.5,mc.thePlayer.posZ);
 		if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockEndPortalFrame && mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically && !isDisconnected) {
 			if(teleportTimer.elapsed(1500)) {
 				mc.thePlayer.jump();

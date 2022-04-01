@@ -9,6 +9,7 @@ import com.github.supernova.modules.macro.CropNuker;
 import com.github.supernova.modules.render.ClickGUI;
 import com.github.supernova.modules.render.DebugESP;
 import com.github.supernova.modules.render.HUD;
+import com.github.supernova.modules.render.World;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class ModuleManager {
 		modules.add(new CropNuker());
 		modules.add(new DebugESP());
 		modules.add(new BowAura());
+		modules.add(new World());
 	}
 
 	@EventHandler
