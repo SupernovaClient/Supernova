@@ -1,6 +1,9 @@
 package net.minecraft.client;
 
 import com.github.supernova.gui.GuiLogin;
+import com.github.supernova.modules.ModuleManager;
+import com.github.supernova.modules.player.FastPlace;
+import com.github.supernova.modules.render.HUD;
 import com.google.common.collect.*;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -243,7 +246,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 	/**
 	 * When you place a block, it's set to 6, decremented once per tick, when it's 0, you can place another block.
 	 */
-	private int rightClickDelayTimer;
+	public int rightClickDelayTimer;
 	private String serverName;
 	private int serverPort;
 
@@ -1309,7 +1312,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 	 */
 	private void rightClickMouse() {
 		if (!this.playerController.func_181040_m()) {
-			this.rightClickDelayTimer = 4;
+			if(!ModuleManager.INSTANCE.get(FastPlace.class).isEnabled()) {
+				this.rightClickDelayTimer = 4;
+			}
 			boolean flag = true;
 			ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();
 

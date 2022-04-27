@@ -89,7 +89,7 @@ public class Alt {
             invalid = false;
             displayName = username;
             cracked = true;
-            NotificationManager.push("Cracked Login", "Logged into "+displayName, 5000, NotificationManager.NotificationType.NONE);
+            Supernova.INSTANCE.getNotifManager().push("Cracked Login", "Logged into "+displayName, 5000, NotificationManager.NotificationType.NONE);
         } else {
             new Thread("Alt Login"){
                 public void run() {
@@ -102,10 +102,10 @@ public class Alt {
                         Supernova.INSTANCE.mc.session = new Session(auth.getSelectedProfile().getName(),auth.getSelectedProfile().getId().toString(),auth.getAuthenticatedToken(),"mojang");
                         displayName = Supernova.INSTANCE.mc.session.getUsername();
                         invalid = false;
-                        NotificationManager.push("Login Success", "Logged into "+displayName, 5000, NotificationManager.NotificationType.SUCCESS);
+                        Supernova.INSTANCE.getNotifManager().push("Login Success", "Logged into "+displayName, 5000, NotificationManager.NotificationType.SUCCESS);
                     } catch (AuthenticationException e) {
                         invalid = true;
-                        NotificationManager.push("Login Failed", "Invalid Details", 5000, NotificationManager.NotificationType.ERROR);
+                        Supernova.INSTANCE.getNotifManager().push("Login Failed", "Invalid Details", 5000, NotificationManager.NotificationType.ERROR);
                         e.printStackTrace();
                     }
                 }

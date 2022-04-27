@@ -6,10 +6,10 @@ import com.github.supernova.Supernova;
 import com.github.supernova.events.misc.EventKey;
 import com.github.supernova.modules.combat.BowAura;
 import com.github.supernova.modules.macro.CropNuker;
-import com.github.supernova.modules.render.ClickGUI;
-import com.github.supernova.modules.render.DebugESP;
-import com.github.supernova.modules.render.HUD;
-import com.github.supernova.modules.render.World;
+import com.github.supernova.modules.macro.TestNuker;
+import com.github.supernova.modules.movement.Flight;
+import com.github.supernova.modules.player.FastPlace;
+import com.github.supernova.modules.render.*;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -32,6 +32,11 @@ public class ModuleManager {
 		modules.add(new DebugESP());
 		modules.add(new BowAura());
 		modules.add(new World());
+		modules.add(new TestNuker());
+		modules.add(new FastPlace());
+		modules.add(new SkullFinder());
+		modules.add(new Flight());
+		modules.add(new BindOverlay());
 	}
 
 	@EventHandler
@@ -52,7 +57,10 @@ public class ModuleManager {
 	}
 
 	public Module get(String name) {
-		return getModules().stream().filter(mod -> mod.getModuleName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		return getModules().stream()
+				.filter(mod -> mod.getModuleName().equalsIgnoreCase(name) ||
+						mod.getModuleName().replace(" ", "").equalsIgnoreCase(name))
+				.findFirst().orElse(null);
 	}
 
 	public ArrayList<Module> getModulesByCategory(Category c) {
@@ -61,5 +69,9 @@ public class ModuleManager {
 
 	public ArrayList<Module> getEnabledModules() {
 		return getModules().stream().filter(Module::isEnabled).collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	public ArrayList<Module> getBindedModules() {
+		return getModules().stream().filter(mod -> mod.getKeyCode() != 0).collect(Collectors.toCollection(ArrayList::new));
 	}
 }

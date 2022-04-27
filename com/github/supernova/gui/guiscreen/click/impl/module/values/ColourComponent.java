@@ -118,6 +118,8 @@ public class ColourComponent extends ValueComponent {
                 0xAAAAAAAA);
         RenderUtil.drawRectOutlineWidth(currentXPos-0.5f,posY+1,1,getComponentHeight()-8,
                 0xDD222222, 0.8f);
+        mc.blockyFontObj.drawStringWithShadow(value.getValueName(),
+                posX+5,posY+(COMPONENT_HEIGHT/2f-mc.blockyFontObj.FONT_HEIGHT/2f)-1.5f,0xFFBBBBBB);
 
     }
 

@@ -22,7 +22,7 @@ public class LaunchClient {
 				"--accessToken", "0", "--assetIndex", "1.8",
 				"--userProperties", "{}",
 				"--gameDir", new File(WORKING_DIRECTORY, ".").getAbsolutePath(),
-				"--assetsDir", new File(WORKING_DIRECTORY, "assets/").getAbsolutePath(), "--session"
+				"--assetsDir", new File(WORKING_DIRECTORY, "assets/").getAbsolutePath()
 		});
 	}
 	

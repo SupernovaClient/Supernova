@@ -65,10 +65,11 @@ public class ModuleDropdown extends Component {
 		this.posY = posY;
 		Vector2f mouse = MouseUtil.getMousePos();
 		int componentIndex = parent.getModuleDropdowns().indexOf(this);
+		Color hudColour = ((HUD)ModuleManager.INSTANCE.get(HUD.class)).hudColourValue.getCurrentValue(componentIndex*40);
 		int componentColour = module.isEnabled() ?
-				((HUD)ModuleManager.INSTANCE.get(HUD.class)).hudColourValue.getCurrentValue(componentIndex*40).getRGB() : 0xFF404040;
+				hudColour.getRGB() : 0xFF404040;
 		componentColour = hoveredComponent((int) mouse.x, (int) mouse.y) ?
-				new Color(componentColour).brighter().getRGB() : componentColour;
+				new Color(componentColour).darker().getRGB() : componentColour;
 		RenderUtil.drawRectWidth(posX, posY, COMPONENT_WIDTH, COMPONENT_HEIGHT, componentColour);
 		mc.blockyFontObj.drawStringWithShadow(module.getModuleName(), posX + 4, posY + (COMPONENT_HEIGHT / 2f - mc.blockyFontObj.FONT_HEIGHT / 2f), 0xFFDADADA);
 		posY += COMPONENT_HEIGHT;

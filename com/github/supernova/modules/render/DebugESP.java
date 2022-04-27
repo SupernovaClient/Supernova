@@ -45,17 +45,13 @@ public class DebugESP extends Module {
     @EventHandler
     public final Listener<EventMotion> eventMotion = event -> {
         if(!event.pre()) return;
-        Supernova.INSTANCE.chat(event.getX()+"");
+        Supernova.INSTANCE.chat(SkyblockUtil.getSpeedPercentage()+"");
     };
 
     @EventHandler
     public final Listener<EventUpdate> eventUpdate = event -> {
-        if(mc.thePlayer.getHeldItem() != null) {
-            ItemStack item = mc.thePlayer.getHeldItem();
-            String skyblockID = SkyblockUtil.getSkyblockID(item);
-            // ExtraAttributes - ID
-        }
     };
+
     @EventHandler
     public final Listener<EventReceivePacket> eventReceivePacketListener = event -> {
     };

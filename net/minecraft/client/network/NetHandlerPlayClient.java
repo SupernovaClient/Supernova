@@ -6,7 +6,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 import com.github.supernova.Supernova;
-import com.github.supernova.events.network.EventReceivePacket;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
@@ -2073,16 +2072,16 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             {
                 BaseAttributeMap baseattributemap = ((EntityLivingBase)entity).getAttributeMap();
 
-                for (S20PacketEntityProperties.Snapshot s20packetentityproperties$snapshot : packetIn.func_149441_d())
+                for (S20PacketEntityProperties.Snapshot s20packetentityproperties$snapshot : packetIn.getProperties())
                 {
-                    IAttributeInstance iattributeinstance = baseattributemap.getAttributeInstanceByName(s20packetentityproperties$snapshot.func_151409_a());
+                    IAttributeInstance iattributeinstance = baseattributemap.getAttributeInstanceByName(s20packetentityproperties$snapshot.getName());
 
                     if (iattributeinstance == null)
                     {
-                        iattributeinstance = baseattributemap.registerAttribute(new RangedAttribute((IAttribute)null, s20packetentityproperties$snapshot.func_151409_a(), 0.0D, 2.2250738585072014E-308D, Double.MAX_VALUE));
+                        iattributeinstance = baseattributemap.registerAttribute(new RangedAttribute((IAttribute)null, s20packetentityproperties$snapshot.getName(), 0.0D, 2.2250738585072014E-308D, Double.MAX_VALUE));
                     }
 
-                    iattributeinstance.setBaseValue(s20packetentityproperties$snapshot.func_151410_b());
+                    iattributeinstance.setBaseValue(s20packetentityproperties$snapshot.getValue());
                     iattributeinstance.removeAllModifiers();
 
                     for (AttributeModifier attributemodifier : s20packetentityproperties$snapshot.func_151408_c())

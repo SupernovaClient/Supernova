@@ -78,11 +78,13 @@ public class BowAura extends Module {
     }
     private ArrayList<EntityLivingBase> getTargets() {
         ArrayList<EntityLivingBase> targets = new ArrayList<>();
+
         if(dungeoncheckValue.getCurrentValue()) {
             boolean isInDungeon = false;
             //TODO: Check if in dungeon
-            if(isInDungeon) return targets;
+            if(!isInDungeon) return targets;
         }
+
         for(Entity entity : mc.theWorld.getLoadedEntityList()) {
             if(mc.thePlayer.getDistanceToEntity(entity) >= rangeValue.getDouble()) continue;
             if(!(entity instanceof EntityLivingBase)) continue;

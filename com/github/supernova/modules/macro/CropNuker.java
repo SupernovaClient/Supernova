@@ -4,11 +4,11 @@ import best.azura.eventbus.handler.EventHandler;
 import best.azura.eventbus.handler.Listener;
 import com.github.supernova.Supernova;
 import com.github.supernova.events.network.EventReceivePacket;
-import com.github.supernova.events.network.EventSendPacket;
 import com.github.supernova.events.player.EventMotion;
 import com.github.supernova.events.player.EventUpdate;
 import com.github.supernova.events.render.EventRender2D;
 import com.github.supernova.events.render.EventRender3D;
+import com.github.supernova.gui.notifications.NotificationManager;
 import com.github.supernova.modules.Category;
 import com.github.supernova.modules.Module;
 import com.github.supernova.modules.ModuleAnnotation;
@@ -26,15 +26,16 @@ import net.minecraft.block.*;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.item.*;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.network.play.server.S20PacketEntityProperties;
 import net.minecraft.util.*;
 
+import javax.swing.plaf.ColorUIResource;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
@@ -83,11 +84,15 @@ public class CropNuker extends Module {
 	private EnumMoveDirection currentMoveDirection = null;
 	private CopyOnWriteArrayList<BlockPos> blocksToBreak = new CopyOnWriteArrayList<>();
 	private CopyOnWriteArrayList<BlockPos> brokenBlocks = new CopyOnWriteArrayList<>();
+	private BlockPos breakCheckBlock = null;
+	private TimerUtil breakCheckTimer = new TimerUtil();
 
 	private int disconnectedTicks = 0;
 	private boolean isDisconnected = false;
 	private TimerUtil teleportTimer = new TimerUtil();
 	private boolean setHome = true;
+	private boolean desynced = false;
+	private TimerUtil desyncTimer = new TimerUtil();
 
 	private boolean debugMode = false;
 
@@ -102,13 +107,14 @@ public class CropNuker extends Module {
 
 	@EventHandler
 	public final Listener<EventUpdate> eventUpdate = event -> {
+		debugMode = true;
 		if(!debugMode) {
 			if (!SkyblockUtil.isOnIsland()) {
 				isDisconnected = true;
 			} else {
 				isDisconnected = false;
 			}
-			if (isDisconnected) {
+			if (!SkyblockUtil.isOnIsland()) {
 				disconnectedTicks++;
 				rejoin(disconnectedTicks);
 			} else {
@@ -144,7 +150,10 @@ public class CropNuker extends Module {
 			mc.thePlayer.sendChatMessage("/sethome");
 		}
 
-		if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockEndPortalFrame && mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically && !isDisconnected) {
+		if(mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockEndPortalFrame
+				&& mc.thePlayer.onGround
+				&& mc.thePlayer.isCollidedVertically
+				&& !isDisconnected && !desynced) {
 			if(teleportTimer.elapsed(1500)) {
 				mc.thePlayer.jump();
 			}
@@ -171,26 +180,53 @@ public class CropNuker extends Module {
 		new Thread("Nuker Thread") {
 			@Override
 			public void run() {
-				while (!this.isInterrupted() && isEnabled()) {
-					if(!isDisconnected) {
-						if (blocksToBreak.size() > 0) {
-							if (breakTimer.elapsed(MathUtil.bpsToMillis(breakBPSValue.getDouble()), true)) {
-								BlockPos blockPos = getNextBlock();
-								mc.getNetHandler().addToSendQueueSilent(new C07PacketPlayerDigging(
-										C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-										blockPos,
-										EnumFacing.DOWN));
-								brokenBlocks.add(blockPos);
-								blocksToBreak.remove(blockPos);
-								lastClearTimer.reset();
+				try {
+					while (!this.isInterrupted() && isEnabled()) {
+						if (!isDisconnected) {
+							if(breakCheckTimer.elapsed(3000,true)) {
+								Supernova.INSTANCE.getNotifManager().push("Desync Check", "Checking for desync", 1000, NotificationManager.NotificationType.WARNING);
+								if(breakCheckBlock != null) {
+									IBlockState state = mc.theWorld.getBlockState(breakCheckBlock);
+									if(getBlockAge(state) == getMaxBlockAge(state)) {
+										if(!desynced) {
+											desynced = true;
+											desyncTimer.reset();
+										}
+									}
+								}
+								breakCheckBlock = getNextBlock();
+								if(desynced) {
+									if(desyncTimer.elapsed(60000)) {
+										desynced = false;
+										desyncTimer.reset();
+									}
+								}
+							}
+							if (blocksToBreak.size() > 0 && !desynced) {
+								if(breakCheckBlock == null) {
+									breakCheckBlock = getNextBlock();
+								}
+								if (breakTimer.elapsed(MathUtil.bpsToMillis(breakBPSValue.getDouble()), true)) {
+									BlockPos blockPos = getNextBlock();
+									mc.getNetHandler().addToSendQueueSilent(new C07PacketPlayerDigging(
+											C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+											blockPos,
+											EnumFacing.DOWN));
+									brokenBlocks.add(blockPos);
+									blocksToBreak.remove(blockPos);
+									lastClearTimer.reset();
+								}
 							}
 						}
+						if (lastClearTimer.elapsed(250, true) || brokenBlocks.size() >= 75) {
+							brokenBlocks.clear();
+						}
 					}
-					if (lastClearTimer.elapsed(250, true) || brokenBlocks.size() >= 75) {
-						brokenBlocks.clear();
-					}
+					runningThread = false;
+				}catch (Exception e) {
+					e.printStackTrace();
+					runningThread = false;
 				}
-				runningThread = false;
 			}
 		}.start();
 	}
@@ -200,6 +236,16 @@ public class CropNuker extends Module {
 		if(isDisconnected) {
 			Gui.drawRect(0,0,mc.displayWidth,mc.displayHeight,0x44FF5050);
 		}
+		ScaledResolution sr = new ScaledResolution(mc);
+		int offset = mc.curvedFontObj.FONT_HEIGHT/2;
+		mc.curvedFontObj.drawStringWithShadow("Desynced: " + (desynced ? "§aTrue" : "§cFalse"), 10, sr.getScaledHeight()/3f-6-offset, 0xFFFFFFFF);
+		int desyncColour = 0xFFFFFFFF;
+		try {
+			desyncColour = ColourUtil.interpolateColors(new Color(0xFFFF3030), new Color(0xFF30FF30), desyncTimer.elapsed() / 60000f).getRGB();
+		} catch (Exception ignored) {
+			desyncColour = 0xFF30FF30;
+		}
+		mc.curvedFontObj.drawStringWithShadow("§fDesync Timer: §r"+ (desynced ? desyncTimer.elapsed() : 0),10,(sr.getScaledHeight()/3f)+6-offset, desyncColour);
 	};
 
 	@EventHandler
@@ -213,12 +259,20 @@ public class CropNuker extends Module {
 			bbox = bbox.offset(-offset.xCoord, -offset.yCoord, -offset.zCoord);
 			Render3DUtil.drawWireAxisBoundingBox(bbox, ColourUtil.astolfoColour(0, 10000), 255);
 		}
+		if(breakCheckBlock != null) {
+			AxisAlignedBB bbox = mc.theWorld.getBlockState(breakCheckBlock).getBlock().getSelectedBoundingBox(mc.theWorld, breakCheckBlock);
+			float partialTicks = event.getPartialTicks();
+			Vec3 offset = Render3DUtil.getRenderOffset(partialTicks);
+			bbox = bbox.offset(-offset.xCoord, -offset.yCoord, -offset.zCoord);
+			Render3DUtil.drawWireAxisBoundingBox(bbox, new Color(0xFFFF3030), 255);
+		}
 	};
 
 	@EventHandler
 	public final Listener<EventMotion> eventMotion = event -> {
 		if(!event.pre()) return;
 		if(isDisconnected) return;
+		if(desynced) return;
 		if (!autoMoveValue.getCurrentValue()) return;
 		if(currentMoveDirection == null || mc.thePlayer.isCollidedHorizontally) {
 			mc.thePlayer.setPosition(
@@ -342,7 +396,7 @@ public class CropNuker extends Module {
 							continue;
 						}
 					}
-					if(type == EnumCropTypes.MELON || type == EnumCropTypes.PUMPKIN) {
+					if(type == EnumCropTypes.MELON || type == EnumCropTypes.PUMPKIN || type == EnumCropTypes.MYCELIUM) {
 						targetBlocks.add(pos);
 					} else if (type == EnumCropTypes.CACTUS || type == EnumCropTypes.CANE) {
 						if(pos.getY() == (playerPos.getY()+1)) {
@@ -402,6 +456,7 @@ public class CropNuker extends Module {
 		NETHERWART(BlockNetherWart.class, "Nether Wart", ItemHoe.class),
 		CANE(BlockReed.class , "Sugar Cane", ItemHoe.class),
 		COCOA(BlockCocoa.class, "Cocoa Bean", ItemAxe.class),
+		MYCELIUM(BlockMycelium.class, "Mycelium", ItemSpade.class),
 		PUMPKIN(BlockPumpkin.class, "Pumpkin", ItemAxe.class),
 		CACTUS(BlockCactus.class , "Cactus", ItemHoe.class),
 		CARROT(BlockCarrot.class, "Carrot", ItemHoe.class),
@@ -410,8 +465,8 @@ public class CropNuker extends Module {
 		MELON(BlockMelon.class, "Melon", ItemAxe.class);
 
 		Class<? extends Block> blockType = null;
-		private String name;
-		private Class<? extends Item> tool;
+		private final String name;
+		private final Class<? extends Item> tool;
 		EnumCropTypes(Class<? extends Block> blockType, String name, Class<? extends Item> breakItem) {
 			this.name = name;
 			this.blockType = blockType;

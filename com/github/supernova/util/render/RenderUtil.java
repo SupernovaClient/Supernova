@@ -9,7 +9,23 @@ import net.minecraft.entity.EntityLivingBase;
 
 import java.awt.*;
 
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+
 public class RenderUtil {
+
+    public static void drawCustomBox(float x, float y, float width, float height, int barColour, float barSize) {
+        drawRectWidth(x,y,width,height,0xFF232323);
+        drawGradientVertical(x,y,x+width,y+barSize,
+                barColour, new Color(barColour).darker().darker().getRGB());
+        drawGradientVertical(x,y+barSize,x+width,y+barSize+(height/10f),
+                new Color(0xFF232323).brighter().getRGB(), 0xFF232323);
+        drawGradientVertical(x,y+height-(height/10f), x+width, y+height,
+                0xFF232323, new Color(0xFF232323).darker().getRGB());
+        drawRectOutlineWidth(x,y,width,height,0xFF101010,1);
+        drawRectOutlineWidth(x,y,width,barSize,0xFF101010, 0.5f);
+    }
+
     public static void drawRectWidth(float x, float y, float width, float height, int colour) {
         Gui.drawRect(x,y,x+width,y+height, colour);
     }
@@ -136,5 +152,21 @@ public class RenderUtil {
             return mouseY >= y && mouseY <= y + height;
         }
         return false;
+    }
+    public static void color(int color) {
+        color(color, 1);
+    }
+    public static void color(int color, float alpha) {
+        Color colour = new Color(color);
+        GlStateManager.color(colour.getRed()/255f, colour.getGreen()/255f, colour.getBlue()/255f, alpha);
+    }
+
+
+    public static void bindTexture(int texture) {
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
+
+    public static void resetColor() {
+        GlStateManager.color(1, 1, 1, 1);
     }
 }
